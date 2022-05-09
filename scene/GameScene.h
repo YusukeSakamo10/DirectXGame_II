@@ -9,6 +9,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "DebugCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -57,8 +58,10 @@ class GameScene {
 	// 3Dモデル
 	Model* model_ = nullptr;
 
-	//座標
+	//デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
 
+	//座標
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
