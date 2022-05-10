@@ -66,4 +66,11 @@ class GameScene {
 	ViewProjection viewProjection_;
 
 	const int maxGrid = 10;
+
+	const float identiy[4][4] = {
+	 {  1,  0,  0,  0 },
+	 {  0,  1,  0,  0 },
+	 {  0,  0,  1,  0 },
+	 {  0,  0,  0 , 1 }
+	};
 };

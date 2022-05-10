@@ -4,6 +4,10 @@
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
 
+//void ID_Matrix(float** array, int a);
+
+
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -41,6 +45,8 @@ void GameScene::Initialize() {
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
+
 
 
 }
@@ -124,3 +130,26 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+/*
+void ID_Matrix(float** array, int a)
+{
+
+
+	float **subArrays = {0,};
+
+	for (int i = 0; i < a; i++) {
+
+		for (int j = 0; j < a; j++) {
+
+			subArrays[i][j] = 0;
+			if (i == j) {
+				subArrays[i][j] = 1;
+			}
+		}
+	}
+
+	array = subArrays;
+}
+
+*/
