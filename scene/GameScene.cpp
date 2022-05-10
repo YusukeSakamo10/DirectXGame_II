@@ -2,11 +2,12 @@
 #include "TextureManager.h"
 #include <cassert>
 #include "AxisIndicator.h"
+#include "PrimitiveDrawer.h"
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
-	delete model_; 
+GameScene::~GameScene() {
+	delete model_;
 	delete debugCamera_;
 }
 
@@ -30,11 +31,17 @@ void GameScene::Initialize() {
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
 
+	//ライン描画が参照するビュープロジェクションを指定する
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
+
+
+
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
 
 }
 
@@ -70,8 +77,33 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+
+
 	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+	
+	for (size_t i = 0; i < maxGrid; i++) {
+		int interval = maxGrid;
+		int length = interval * (maxGrid-1);
+		float distance = interval * i;
+		float StartPosX = distance;
+		float StartPosZ = distance;
+
+		float EndPosX = length;
+		float EndPosZ = distance;
+		float posZ = StartPosX * i;
+
+		//横
+		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(0, 0, StartPosZ), Vector3(EndPosX, 0, EndPosZ), Vector4(1, 0, 0, 1));
+
+		StartPosX = distance;
+		StartPosZ = 0;
+		EndPosX = distance;
+		EndPosZ =length;
+		//縦
+		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(StartPosX, 0, 0), Vector3(EndPosX, 0, EndPosZ), Vector4(0, 0, 1, 1));
+
+	}
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

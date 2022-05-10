@@ -65,4 +65,5 @@ class GameScene {
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 
+	const int maxGrid = 10;
 };
