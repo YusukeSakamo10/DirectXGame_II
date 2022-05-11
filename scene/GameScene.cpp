@@ -4,9 +4,8 @@
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
 
-//void ID_Matrix(float** array, int a);
-
-
+#define X_PI 3.1415f
+#define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
 
 GameScene::GameScene() {}
 
@@ -28,8 +27,17 @@ void GameScene::Initialize() {
 
 	//3Dモデルの生成
 	model_ = Model::Create();
+
+	//ワールドトランスフォームの初期化
+	worldTransform_.Initialize();
+
+
+	//ビュープロジェクションの初期化
+	viewProjection_.Initialize();
+
+
 	//デバッグカメラの生成
-	debugCamera_ = new DebugCamera(1200, 730);
+	debugCamera_ = new DebugCamera(1280, 720);
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -39,15 +47,14 @@ void GameScene::Initialize() {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
 
+	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
+	worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
 
-	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
-
-	//ビュープロジェクションの初期化
-	viewProjection_.Initialize();
-
+	worldTransform_.rotation_ = {  DEGREE_RADIAN(45),0.0f, 0.0f };
+	worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
 
 
+	worldTransform_.TransferMatrix();
 
 }
 
@@ -88,8 +95,8 @@ void GameScene::Draw() {
 	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	
 	for (size_t i = 0; i < maxGrid; i++) {
-		int interval = maxGrid;
-		int length = interval * (maxGrid-1);
+		float interval = maxGrid;
+		float length = interval * (maxGrid-1);
 		float distance = interval * i;
 		float StartPosX = distance;
 		float StartPosZ = distance;
@@ -131,25 +138,3 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-/*
-void ID_Matrix(float** array, int a)
-{
-
-
-	float **subArrays = {0,};
-
-	for (int i = 0; i < a; i++) {
-
-		for (int j = 0; j < a; j++) {
-
-			subArrays[i][j] = 0;
-			if (i == j) {
-				subArrays[i][j] = 1;
-			}
-		}
-	}
-
-	array = subArrays;
-}
-
-*/
