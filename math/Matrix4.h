@@ -67,7 +67,7 @@ public:
 
 		return identity *= Scale;
 	}
-	Matrix4 RotationMatrix(const Vector3 rotation){
+	Matrix4 RotationMatrix(const Vector3& rotation){
 
 		Matrix4 matRot = Matrix4(
 			1, 0, 0, 0,
@@ -88,7 +88,7 @@ public:
 
 	}
 	
-	Matrix4 TranslationMatrix(const Vector3 transform){
+	Matrix4 TranslationMatrix(const Vector3& transform){
 		Matrix4 identity = Matrix4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
@@ -103,7 +103,17 @@ public:
 		return identity *= matTrans;
 	}
 
+	void WorldTransUpdate(const Vector3& scale_ , const Vector3& rotation_, const Vector3& translation_ ) {
+		Matrix4 matScale, matRot, matTrans;
 
+		matScale = matScale.ScaleMatrix(scale_);
+		matRot = matRot.RotationMatrix(rotation_);
+		matTrans = matTrans.TranslationMatrix(translation_);
+
+		*this *= matScale;
+		*this *= matRot;
+		*this *= matTrans;
+	}
 	// 代入演算子オーバーロード
 	Matrix4& operator*=(const Matrix4& m2);
 	
