@@ -47,12 +47,14 @@ void GameScene::Initialize() {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
 
-	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
-	worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
+	//worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
+	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
 
-	worldTransform_.rotation_ = {  DEGREE_RADIAN(45),0.0f, 0.0f };
-	worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
+//	worldTransform_.rotation_ = {  DEGREE_RADIAN(45),0.0f, DEGREE_RADIAN(45) };
+//	worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
 
+	worldTransform_.translation_ = { 10.0f,5.0f,10.0f };
+	worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
 
 	worldTransform_.TransferMatrix();
 

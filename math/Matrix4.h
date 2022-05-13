@@ -88,7 +88,20 @@ public:
 
 	}
 	
-	void Translation(){}
+	Matrix4 TranslationMatrix(const Vector3 transform){
+		Matrix4 identity = Matrix4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+		Matrix4 matTrans = Matrix4(
+			1,				0,			0,			0,
+			0,				1,			0,			0,
+			0,				0,			1,			0,
+			transform.x, transform.y, transform.z,	1);
+
+		return identity *= matTrans;
+	}
 
 
 	// 代入演算子オーバーロード
