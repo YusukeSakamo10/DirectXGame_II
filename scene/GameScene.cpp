@@ -49,13 +49,16 @@ void GameScene::Initialize() {
 
 	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
 	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
-	worldTransform_.rotation_ = {  DEGREE_RADIAN(45),0.0f, 0.0f };
+	float radian = DEGREE_RADIAN(45);
+	worldTransform_.rotation_ = {  radian,radian, 0.0f };
 	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
 	worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
+	worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
 
-	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
+	//worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
 
+	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
+	
 	worldTransform_.TransferMatrix();
 
 }

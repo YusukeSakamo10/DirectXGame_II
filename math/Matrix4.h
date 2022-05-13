@@ -5,6 +5,11 @@
 class Matrix4 {
 
 private:
+	/// <summary>
+	/// X軸周りの回転行列
+	/// </summary>
+	/// <param name="radian">回転角</param>
+	/// <returns></returns>
 	Matrix4 Rot4X(const float &radian) const{
 		Matrix4 RotX = Matrix4(
 			1,		0,			 0,				0,
@@ -14,7 +19,11 @@ private:
 		
 		return RotX;
 	}
-
+	/// <summary>
+	/// Y軸周りの回転行列
+	/// </summary>
+	/// <param name="radian">回転角</param>
+	/// <returns>Y軸回転行列</returns>
 	Matrix4 Rot4Y(const float &radian) const{
 		Matrix4 RotY = Matrix4(
 			cos(radian),	0,	 -sin(radian),	0,
@@ -24,7 +33,11 @@ private:
 
 		return RotY;
 	}
-
+	/// <summary>
+	/// Z軸周りの回転行列
+	/// </summary>
+	/// <param name="radian">回転角</param>
+	/// <returns></returns>
 	Matrix4 Rot4Z(const float &radian) const{
 		Matrix4 RotY = Matrix4(
 			cos(radian),  sin(radian),	0,	0,
@@ -50,8 +63,12 @@ public:
 		float m30, float m31, float m32, float m33);
 
 
-
-	Matrix4 ScaleMatrix(const Vector3& v) {
+	/// <summary>
+	/// スケーリングの行列を求める
+	/// </summary>
+	/// <param name="scale">スケール値</param>
+	/// <returns></returns>
+	Matrix4 ScaleMatrix(const Vector3& scale) {
 
 		Matrix4 identity = Matrix4(
 			1, 0, 0, 0,
@@ -60,13 +77,18 @@ public:
 			0, 0, 0, 1);
 
 		Matrix4 Scale = Matrix4(
-			v.x, 0, 0, 0,
-			0, v.y, 0, 0,
-			0, 0, v.z, 0,
+			scale.x, 0, 0, 0,
+			0, scale.y, 0, 0,
+			0, 0, scale.z, 0,
 			0, 0, 0, 1);
 
 		return identity *= Scale;
 	}
+	/// <summary>
+	/// XYZの回転行列を求める
+	/// </summary>
+	/// <param name="rotation">回転角</param>
+	/// <returns></returns>
 	Matrix4 RotationMatrix(const Vector3& rotation){
 
 		Matrix4 matRot = Matrix4(
@@ -87,7 +109,11 @@ public:
 		return	identity *= matRot;
 
 	}
-	
+	/// <summary>
+	/// 平行移動の行列を求める
+	/// </summary>
+	/// <param name="transform">移動値</param>
+	/// <returns></returns>
 	Matrix4 TranslationMatrix(const Vector3& transform){
 		Matrix4 identity = Matrix4(
 			1, 0, 0, 0,
@@ -103,6 +129,17 @@ public:
 		return identity *= matTrans;
 	}
 
+	void TransMatrix(const Vector3& transform) {
+		*this *= TranslationMatrix(transform);
+	}
+
+	
+	/// <summary>
+	/// スケール、回転、移動の変化を座標に変換する
+	/// </summary>
+	/// <param name="scale_">スケール値</param>
+	/// <param name="rotation_">回転角</param>
+	/// <param name="translation_">移動値</param>
 	void WorldTransUpdate(const Vector3& scale_ , const Vector3& rotation_, const Vector3& translation_ ) {
 		Matrix4 matScale, matRot, matTrans;
 
