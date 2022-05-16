@@ -52,7 +52,7 @@ void GameScene::Initialize() {
 	worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
 
 	//変換行列を求める
-	worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
+	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
 
 	
 	worldTransform_.TransferMatrix();
