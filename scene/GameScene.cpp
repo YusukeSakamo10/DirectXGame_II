@@ -3,6 +3,7 @@
 #include <cassert>
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
+#include <random>
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
@@ -46,6 +47,17 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
+	//乱数シード生成器
+	std::random_device seed_gen;
+	//メルセンヌ・ツイスターの乱数エンジン
+	std::mt19937_64 engine(seed_gen());
+	//乱数範囲の指定
+	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
+	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
+
+
+	float rotDis = rot(engine);
+	float posDis = dist(engine);
 
 	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
 	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
