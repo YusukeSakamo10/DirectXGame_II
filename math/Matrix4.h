@@ -5,6 +5,7 @@
 class Matrix4 {
 
 private:
+#pragma region 回転行列の各計算
 	/// <summary>
 	/// X軸周りの回転行列
 	/// </summary>
@@ -46,7 +47,7 @@ private:
 			0,				0,			0,	1);
 		return RotY;
 	}
-
+#pragma endregion 回転行列の各計算
 public:
 	// 行x列
 	float m[4][4];
