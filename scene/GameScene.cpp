@@ -22,6 +22,14 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
+	//乱数シード生成器
+	std::random_device seed_gen;
+	//メルセンヌ・ツイスターの乱数エンジン
+	std::mt19937_64 engine(seed_gen());
+	//乱数範囲の指定
+	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
+	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
+
 
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("mario.jpg");
@@ -29,9 +37,21 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 
-	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
+	for (WorldTransform& worldTransform_: worldTransforms_) {
+		//ワールドトランスフォームの初期化
+		worldTransform_.Initialize();
 
+		worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
+
+		worldTransform_.rotation_ = { DEGREE_RADIAN(rotDis),DEGREE_RADIAN(rotDis), DEGREE_RADIAN(rotDis) };
+		worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
+
+		worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+		worldTransform_.TransferMatrix();
+
+	}
+	
+	
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -47,31 +67,8 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
-	//乱数シード生成器
-	std::random_device seed_gen;
-	//メルセンヌ・ツイスターの乱数エンジン
-	std::mt19937_64 engine(seed_gen());
-	//乱数範囲の指定
-	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
-	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
 
 
-	float rotDis = rot(engine);
-	float posDis = dist(engine);
-
-	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
-	float radian = DEGREE_RADIAN(45);
-	worldTransform_.rotation_ = {  radian,radian, 0.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
-	worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
-	worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
-
-	//worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
-
-	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
-	
-	worldTransform_.TransferMatrix();
 
 }
 
@@ -109,7 +106,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 
-	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+//	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
