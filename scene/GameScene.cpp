@@ -41,17 +41,20 @@ void GameScene::Initialize() {
 		//ワールドトランスフォームの初期化
 		worldTransform_.Initialize();
 
-		worldTransform_.scale_ = {5.0f, 5.0f, 5.0f};
-
-		worldTransform_.rotation_ = { DEGREE_RADIAN(rotDis),DEGREE_RADIAN(rotDis), DEGREE_RADIAN(rotDis) };
-		worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
+		worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
+		worldTransform_.rotation_ = {DEGREE_RADIAN(rot(engine)),DEGREE_RADIAN(rot(engine)), DEGREE_RADIAN(rot(engine))};
+		worldTransform_.translation_ = { dist(engine), dist(engine), dist(engine)};
 
 		worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 		worldTransform_.TransferMatrix();
 
 	}
 	
-	
+	//ビュー変換
+	viewProjection_.eye = { 10,10,10 };
+	viewProjection_.target = { 0,0,0 };
+
+
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -62,7 +65,7 @@ void GameScene::Initialize() {
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	//ライン描画が参照するビュープロジェクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
@@ -75,6 +78,14 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
+
+	Vector3 move = { 0,0,0 };
+
+	const float kEyespeed = 0.2f;
+
+	if (input_->PushKey(DIK_W)) {
+		move.z += 0;
+	}
 
 }
 
@@ -105,9 +116,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-
-//	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
-	
+	for (size_t i = 0; i < 100; i++) {
+		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	}
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
 		float length = interval * (maxGrid-1);
