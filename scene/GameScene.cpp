@@ -31,7 +31,6 @@ void GameScene::Initialize() {
 	//ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -46,18 +45,15 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
-
+	//座標の設定
 	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
 	float radian = DEGREE_RADIAN(45);
 	worldTransform_.rotation_ = {  radian,radian, 0.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
 	worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
-	worldTransform_.matWorld_ *= worldTransform_.matWorld_.TranslationMatrix(worldTransform_.translation_);
 
-	//worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
+	//変換行列を求める
+	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
 
-	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
 	
 	worldTransform_.TransferMatrix();
 
@@ -99,29 +95,7 @@ void GameScene::Draw() {
 
 	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 	
-	for (size_t i = 0; i < maxGrid; i++) {
-		float interval = maxGrid;
-		float length = interval * (maxGrid-1);
-		float distance = interval * i;
-		float StartPosX = distance;
-		float StartPosZ = distance;
-
-		float EndPosX = length;
-		float EndPosZ = distance;
-		float posZ = StartPosX * i;
-
-		//横
-		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(0, 0, StartPosZ), Vector3(EndPosX, 0, EndPosZ), Vector4(1, 0, 0, 1));
-
-		StartPosX = distance;
-		StartPosZ = 0;
-		EndPosX = distance;
-		EndPosZ =length;
-		//縦
-		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(StartPosX, 0, 0), Vector3(EndPosX, 0, EndPosZ), Vector4(0, 0, 1, 1));
-
-	}
-
+	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
