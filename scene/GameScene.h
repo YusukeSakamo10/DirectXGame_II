@@ -66,6 +66,6 @@ class GameScene {
 	ViewProjection viewProjection_;
 
 	const int maxGrid = 10;
-
+	float viewAngle = 0.0f;
 
 };

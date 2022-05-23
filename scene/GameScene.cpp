@@ -51,9 +51,8 @@ void GameScene::Initialize() {
 	}
 	
 	//ビュー変換
-	viewProjection_.eye = { 1,1,1 };
+	viewProjection_.eye = { 0,0,0 };
 	viewProjection_.target = { 0,0,0 };
-	viewProjection_.up = { cosf(X_PI/4.0f), sinf(X_PI / 4.0f), 0.0f };
 
 
 	//ビュープロジェクションの初期化
@@ -90,8 +89,24 @@ void GameScene::Update() {
 	move.x = (input_->PushKey(DIK_RIGHT) - input_->PushKey(DIK_LEFT)) * kTargetSpeed;
 	viewProjection_.target += move;
 
+	const float kUpRotSpeed = 0.05f;
+	if (input_->PushKey(DIK_SPACE)) {
+		viewAngle += kUpRotSpeed;
+		//2PIを超えたら0に戻す
+		viewAngle = fmodf(viewAngle, X_PI * 2.0f);
+	}
+
+	viewProjection_.up = { cosf(viewAngle), sinf(viewAngle), 0.0f };
 
 	viewProjection_.UpdateMatrix();
+	debugText_->SetPos(50, 50);
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+
+	debugText_->SetPos(50, 70);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
+
+	debugText_->SetPos(50, 90);
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
 
 
 
@@ -165,13 +180,6 @@ void GameScene::Draw() {
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
-	debugText_->SetPos(50, 50);
-	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
-	
-	debugText_->DrawAll(commandList);
-	debugText_->SetPos(50, 70);
-	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
-
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
