@@ -53,7 +53,7 @@ void GameScene::Initialize() {
 	//ビュー変換
 	viewProjection_.eye = { 1,1,1 };
 	viewProjection_.target = { 0,0,0 };
-
+	viewProjection_.up = { cosf(X_PI/4.0f), sinf(X_PI / 4.0f), 0.0f };
 
 
 	//ビュープロジェクションの初期化
