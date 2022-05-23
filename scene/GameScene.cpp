@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 	}
 	
 	//ビュー変換
-	viewProjection_.eye = { 10,10,10 };
+	viewProjection_.eye = { 1,1,1 };
 	viewProjection_.target = { 0,0,0 };
 
 
@@ -81,11 +81,19 @@ void GameScene::Update() {
 
 	Vector3 move = { 0,0,0 };
 
-	const float kEyespeed = 0.2f;
+	const float kEyeSpeed = 0.2f;
+	move.z = (input_->PushKey(DIK_W) - input_->PushKey(DIK_S)) * kEyeSpeed;
+	viewProjection_.eye += move;
 
-	if (input_->PushKey(DIK_W)) {
-		move.z += 0;
-	}
+	move = { 0,0,0 };
+	const float kTargetSpeed = 0.2f;
+	move.x = (input_->PushKey(DIK_RIGHT) - input_->PushKey(DIK_LEFT)) * kTargetSpeed;
+	viewProjection_.target += move;
+
+
+	viewProjection_.UpdateMatrix();
+
+
 
 }
 
@@ -119,6 +127,7 @@ void GameScene::Draw() {
 	for (size_t i = 0; i < 100; i++) {
 		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
 	}
+
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
 		float length = interval * (maxGrid-1);
@@ -156,7 +165,14 @@ void GameScene::Draw() {
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
-	//
+	debugText_->SetPos(50, 50);
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+	
+	debugText_->DrawAll(commandList);
+	debugText_->SetPos(50, 70);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
+
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
