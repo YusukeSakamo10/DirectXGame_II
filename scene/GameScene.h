@@ -67,5 +67,5 @@ class GameScene {
 
 	const int maxGrid = 10;
 	float viewAngle = 0.0f;
-
+	float fovAngle = 10.0f;
 };

@@ -7,6 +7,21 @@
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
+#define RADIAN2DEGREE(radian) radian * 180 / X_PI
+float MinNum(float num, float min) { return num > min ? min : num; }
+
+float MaxNum(float num, float max) { return num < max ? max : num; }
+
+float clamp(float num, float min, float max) {
+	if (num < min) {
+		return min;
+	}
+	else if (num > max) {
+		return max;
+	}
+	return num;
+}
+
 
 GameScene::GameScene() {}
 
@@ -37,23 +52,20 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 
-	for (WorldTransform& worldTransform_: worldTransforms_) {
+	for (WorldTransform& worldTransform_ : worldTransforms_) {
 		//ワールドトランスフォームの初期化
 		worldTransform_.Initialize();
 
-		worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
-		worldTransform_.rotation_ = {DEGREE_RADIAN(rot(engine)),DEGREE_RADIAN(rot(engine)), DEGREE_RADIAN(rot(engine))};
-		worldTransform_.translation_ = { dist(engine), dist(engine), dist(engine)};
+		worldTransform_.scale_ = { 1.0f, 1.0f, 1.0f };
+		worldTransform_.rotation_ = { DEGREE_RADIAN(rot(engine)),DEGREE_RADIAN(rot(engine)), DEGREE_RADIAN(rot(engine)) };
+		worldTransform_.translation_ = { dist(engine), dist(engine), dist(engine) };
 
 		worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 		worldTransform_.TransferMatrix();
 
 	}
-	
-	//ビュー変換
-	viewProjection_.eye = { 0,0,0 };
-	viewProjection_.target = { 0,0,0 };
 
+	viewProjection_.fovAngleY = DEGREE_RADIAN(fovAngle);
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -68,28 +80,14 @@ void GameScene::Initialize() {
 
 	//ライン描画が参照するビュープロジェクションを指定する
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
-
-
-	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.ScaleMatrix(worldTransform_.scale_);
-	float radian = DEGREE_RADIAN(45);
-	worldTransform_.rotation_ = {  radian,radian, 0.0f };
-	//worldTransform_.matWorld_ *= worldTransform_.matWorld_.RotationMatrix(worldTransform_.rotation_);
-	//worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
-
-	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
-	
-	worldTransform_.TransferMatrix();
-
-	
-	worldTransform_.TransferMatrix();
-
 }
 
 void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
 
+#pragma region ビュー連続変換
+	/*
 	Vector3 move = { 0,0,0 };
 
 	const float kEyeSpeed = 0.2f;
@@ -119,6 +117,17 @@ void GameScene::Update() {
 
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
+	*/
+#pragma endregion ビュー連続変換
+
+	float AngleSpdY = (input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN)) * 2.0f;
+
+	fovAngle += AngleSpdY;
+	viewProjection_.fovAngleY = clamp(DEGREE_RADIAN(viewProjection_.fovAngleY + fovAngle), 0.01f, X_PI);
+	viewProjection_.UpdateMatrix();
+
+	debugText_->SetPos(50, 110);
+	debugText_->Printf("fovAngleY(Degree): %f", RADIAN2DEGREE(viewProjection_.fovAngleY));
 
 
 
@@ -157,7 +166,7 @@ void GameScene::Draw() {
 
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
-		float length = interval * (maxGrid-1);
+		float length = interval * (maxGrid - 1);
 		float distance = interval * i;
 		float StartPosX = distance;
 		float StartPosZ = distance;
@@ -172,7 +181,7 @@ void GameScene::Draw() {
 		StartPosX = distance;
 		StartPosZ = 0;
 		EndPosX = distance;
-		EndPosZ =length;
+		EndPosZ = length;
 		//縦
 		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(StartPosX, 0, 0), Vector3(EndPosX, 0, EndPosZ), Vector4(0, 0, 1, 1));
 
