@@ -142,13 +142,12 @@ public:
 	/// <param name="translation_">移動値</param>
 	void WorldTransUpdate(const Vector3& scale_ , const Vector3& rotation_, const Vector3& translation_ ) {
 		Matrix4 matScale, matRot, matTrans;
-
 		matScale = matScale.ScaleMatrix(scale_);
 		matRot = matRot.RotationMatrix(rotation_);
 		matTrans = matTrans.TranslationMatrix(translation_);
 
 		*this *= matScale;
-		*this *= matRot;
+		//*this *= matRot;
 		*this *= matTrans;
 	}
 	// 代入演算子オーバーロード

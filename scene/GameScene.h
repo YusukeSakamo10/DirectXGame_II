@@ -62,6 +62,10 @@ class GameScene {
 	DebugCamera* debugCamera_ = nullptr;
 
 	//座標
-	WorldTransform worldTransform_;
+	WorldTransform worldTransforms_[100];
 	ViewProjection viewProjection_;
+
+	const int maxGrid = 10;
+	float viewAngle = 0.0f;
+
 };
