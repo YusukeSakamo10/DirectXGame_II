@@ -64,8 +64,14 @@ void GameScene::Initialize() {
 		worldTransform_.TransferMatrix();
 
 	}
-
 	viewProjection_.fovAngleY = DEGREE_RADIAN(fovAngle);
+
+	//viewProjection_.aspectRatio = 1.0f;
+
+	//ニアクリップ
+	viewProjection_.nearZ = 52.0f;
+	//ファークリップ
+	viewProjection_.farZ = 53.0f;
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -120,15 +126,19 @@ void GameScene::Update() {
 	*/
 #pragma endregion ビュー連続変換
 
-	float AngleSpdY = (input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN)) * 2.0f;
-
+	float AngleSpdY = (input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN)) * 0.2f;
+/*
 	fovAngle += AngleSpdY;
 	viewProjection_.fovAngleY = clamp(DEGREE_RADIAN(viewProjection_.fovAngleY + fovAngle), 0.01f, X_PI);
 	viewProjection_.UpdateMatrix();
 
 	debugText_->SetPos(50, 110);
 	debugText_->Printf("fovAngleY(Degree): %f", RADIAN2DEGREE(viewProjection_.fovAngleY));
-
+	*/
+	viewProjection_.nearZ += AngleSpdY;
+	viewProjection_.UpdateMatrix();
+	debugText_->SetPos(50, 130);
+	debugText_->Printf("nearZ: %f", viewProjection_.nearZ);
 
 
 }
