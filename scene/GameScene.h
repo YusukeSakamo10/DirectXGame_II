@@ -62,10 +62,25 @@ class GameScene {
 	DebugCamera* debugCamera_ = nullptr;
 
 	//座標
-	WorldTransform worldTransforms_[100];
+	WorldTransform worldTransforms_[10];
 	ViewProjection viewProjection_;
 
 	const int maxGrid = 10;
-	float viewAngle = 0.0f;
-	float fovAngle = 10.0f;
+	
+public:
+	//パーツID
+	enum PartId {
+		KROOT,  //大元
+		KSPINE, //脊椎
+		KCHEST, //胸
+		KHEAD,  //頭
+		KARML,  //左腕
+		KARMR,  //右腕
+		KHIP,   //尻
+		KLEGL,  //左足
+		KLEGR,  //右足
+	
+		kNUMPARTID
+	};
+
 };

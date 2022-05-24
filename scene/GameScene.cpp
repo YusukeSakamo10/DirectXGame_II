@@ -3,7 +3,6 @@
 #include <cassert>
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
-#include <random>
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
@@ -37,13 +36,6 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
-	//乱数シード生成器
-	std::random_device seed_gen;
-	//メルセンヌ・ツイスターの乱数エンジン
-	std::mt19937_64 engine(seed_gen());
-	//乱数範囲の指定
-	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
-	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
 
 
 	//画像の読み込み
@@ -52,26 +44,55 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 
-	for (WorldTransform& worldTransform_ : worldTransforms_) {
-		//ワールドトランスフォームの初期化
-		worldTransform_.Initialize();
+	worldTransforms_[PartId::KROOT].scale_ = { 1.0f,1.0f, 1.0f };
+	worldTransforms_[PartId::KROOT].rotation_ = { 0,0, 0 };
+	worldTransforms_[PartId::KROOT].translation_ = { 0,0,0 };
 
-		worldTransform_.scale_ = { 1.0f, 1.0f, 1.0f };
-		worldTransform_.rotation_ = { DEGREE_RADIAN(rot(engine)),DEGREE_RADIAN(rot(engine)), DEGREE_RADIAN(rot(engine)) };
-		worldTransform_.translation_ = { dist(engine), dist(engine), dist(engine) };
+	worldTransforms_[0].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
 
-		worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-		worldTransform_.TransferMatrix();
+#pragma region キャラクター座標
+	//脊椎
+	worldTransforms_[PartId::KSPINE].translation_ = { 0, 4.5f,0 };
+	worldTransforms_[PartId::KSPINE].parent_ = &worldTransforms_[PartId::KROOT];
+	worldTransforms_[PartId::KSPINE].Initialize();
 
+	//上半身
+	worldTransforms_[PartId::KCHEST].translation_ = { 0, 0,0 };
+	worldTransforms_[PartId::KCHEST].parent_ = &worldTransforms_[PartId::KSPINE];
+	worldTransforms_[PartId::KCHEST].Initialize();
+
+	worldTransforms_[PartId::KHEAD].translation_ = { 0, 4.5f,0 };
+	worldTransforms_[PartId::KHEAD].parent_ = &worldTransforms_[PartId::KCHEST];
+	worldTransforms_[PartId::KHEAD].Initialize();
+
+	worldTransforms_[PartId::KARML].translation_ = { -5.0f, 0,0 };
+	worldTransforms_[PartId::KARML].parent_ = &worldTransforms_[PartId::KCHEST];
+	worldTransforms_[PartId::KARML].Initialize();
+
+	worldTransforms_[PartId::KARMR].translation_ = { 5.0, 0,0 };
+	worldTransforms_[PartId::KARMR].parent_ = &worldTransforms_[PartId::KCHEST];
+	worldTransforms_[PartId::KARMR].Initialize();
+
+	//下半身
+
+	worldTransforms_[PartId::KHIP].translation_ = { 0, -4.5f,0 };
+	worldTransforms_[PartId::KHIP].parent_ = &worldTransforms_[PartId::KSPINE];
+	worldTransforms_[PartId::KHIP].Initialize();
+
+	worldTransforms_[PartId::KLEGL].translation_ = { -5.0f, -4.5f,0 };
+	worldTransforms_[PartId::KLEGL].parent_ = &worldTransforms_[PartId::KHIP];
+	worldTransforms_[PartId::KLEGL].Initialize();
+
+	worldTransforms_[PartId::KLEGR].translation_ = { +5.0f, -4.5f,0 };
+	worldTransforms_[PartId::KLEGR].parent_ = &worldTransforms_[PartId::KHIP];
+	worldTransforms_[PartId::KLEGR].Initialize();
+#pragma endregion キャラクター座標
+
+	//子どもアップデート
+	for (size_t i = 1; i < PartId::kNUMPARTID; i++) {
+		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
 	}
-	viewProjection_.fovAngleY = DEGREE_RADIAN(fovAngle);
 
-	//viewProjection_.aspectRatio = 1.0f;
-
-	//ニアクリップ
-	viewProjection_.nearZ = 52.0f;
-	//ファークリップ
-	viewProjection_.farZ = 53.0f;
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -125,21 +146,45 @@ void GameScene::Update() {
 	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
 	*/
 #pragma endregion ビュー連続変換
+	
+	 Vector3 move = { 0,0,0 };
 
-	float AngleSpdY = (input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN)) * 0.2f;
-/*
-	fovAngle += AngleSpdY;
-	viewProjection_.fovAngleY = clamp(DEGREE_RADIAN(viewProjection_.fovAngleY + fovAngle), 0.01f, X_PI);
-	viewProjection_.UpdateMatrix();
+	const float kCharacterSpeed = 0.2f;
 
-	debugText_->SetPos(50, 110);
-	debugText_->Printf("fovAngleY(Degree): %f", RADIAN2DEGREE(viewProjection_.fovAngleY));
-	*/
-	viewProjection_.nearZ += AngleSpdY;
-	viewProjection_.UpdateMatrix();
-	debugText_->SetPos(50, 130);
-	debugText_->Printf("nearZ: %f", viewProjection_.nearZ);
+	if (input_->PushKey(DIK_LEFT)) {
+		move = { -kCharacterSpeed, 0,0 };
+	}
+	else if (input_->PushKey(DIK_RIGHT)) {
+		move = { kCharacterSpeed, 0,0 };
+	}
 
+	worldTransforms_[PartId::KROOT].translation_, move;
+
+
+	const float kChestRotSpeed = 0.05f;
+
+	float ChestRotY = (input_->PushKey(DIK_I) - input_->PushKey(DIK_U)) * kChestRotSpeed;
+	worldTransforms_[PartId::KCHEST].rotation_.y += ChestRotY;
+
+	const float kHipRotSpeed = 0.05f;
+
+	float HipRotY = (input_->PushKey(DIK_K) - input_->PushKey(DIK_J)) * kHipRotSpeed;
+	worldTransforms_[PartId::KHIP].rotation_.y += HipRotY;
+
+	debugText_->SetPos(50, 150);
+	debugText_->Printf("Root:(%f,%f,%f)",
+		worldTransforms_[PartId::KROOT].translation_.x,
+		worldTransforms_[PartId::KROOT].translation_.y,
+		worldTransforms_[PartId::KROOT].translation_.z
+	);
+	debugText_->Print("ArrowKey L & R : Rootを移動", 50, 170);
+	debugText_->Print("U Key , I Key : Rotation on Top", 50, 190);
+	debugText_->Print("J Key , K Key : Rotation on Bottom", 50, 210);
+	worldTransforms_[0].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
+	//子どもアップデート
+	for (size_t i = 1; i < PartId::kNUMPARTID; i++) {
+		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+	}
 
 }
 
@@ -170,7 +215,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	for (size_t i = 0; i < 100; i++) {
+	for (size_t i = 0; i < kNUMPARTID; i++) {
 		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
 	}
 
