@@ -7,6 +7,9 @@
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
 #define RADIAN2DEGREE(radian) radian * 180 / X_PI
+
+
+
 float MinNum(float num, float min) { return num > min ? min : num; }
 
 float MaxNum(float num, float max) { return num < max ? max : num; }
@@ -37,12 +40,14 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 
-
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("mario.jpg");
 
 	//3Dモデルの生成
 	model_ = Model::Create();
+	for (WorldTransform& worldTrasform_ : worldTransforms_) {
+		worldTrasform_.Initialize();
+	}
 
 	worldTransforms_[PartId::KROOT].scale_ = { 1.0f,1.0f, 1.0f };
 	worldTransforms_[PartId::KROOT].rotation_ = { 0,0, 0 };
@@ -54,43 +59,38 @@ void GameScene::Initialize() {
 	//脊椎
 	worldTransforms_[PartId::KSPINE].translation_ = { 0, 4.5f,0 };
 	worldTransforms_[PartId::KSPINE].parent_ = &worldTransforms_[PartId::KROOT];
-	worldTransforms_[PartId::KSPINE].Initialize();
 
 	//上半身
 	worldTransforms_[PartId::KCHEST].translation_ = { 0, 0,0 };
 	worldTransforms_[PartId::KCHEST].parent_ = &worldTransforms_[PartId::KSPINE];
-	worldTransforms_[PartId::KCHEST].Initialize();
 
 	worldTransforms_[PartId::KHEAD].translation_ = { 0, 4.5f,0 };
 	worldTransforms_[PartId::KHEAD].parent_ = &worldTransforms_[PartId::KCHEST];
-	worldTransforms_[PartId::KHEAD].Initialize();
 
 	worldTransforms_[PartId::KARML].translation_ = { -5.0f, 0,0 };
 	worldTransforms_[PartId::KARML].parent_ = &worldTransforms_[PartId::KCHEST];
-	worldTransforms_[PartId::KARML].Initialize();
 
 	worldTransforms_[PartId::KARMR].translation_ = { 5.0, 0,0 };
 	worldTransforms_[PartId::KARMR].parent_ = &worldTransforms_[PartId::KCHEST];
-	worldTransforms_[PartId::KARMR].Initialize();
 
 	//下半身
 
 	worldTransforms_[PartId::KHIP].translation_ = { 0, -4.5f,0 };
 	worldTransforms_[PartId::KHIP].parent_ = &worldTransforms_[PartId::KSPINE];
-	worldTransforms_[PartId::KHIP].Initialize();
-
-	worldTransforms_[PartId::KLEGL].translation_ = { -5.0f, -4.5f,0 };
+	
+	worldTransforms_[PartId::KLEGL].translation_ = { -5.0f, -8.0f,0 };
 	worldTransforms_[PartId::KLEGL].parent_ = &worldTransforms_[PartId::KHIP];
-	worldTransforms_[PartId::KLEGL].Initialize();
-
-	worldTransforms_[PartId::KLEGR].translation_ = { +5.0f, -4.5f,0 };
+	
+	worldTransforms_[PartId::KLEGR].translation_ = { +5.0f, -8.0f,0 };
 	worldTransforms_[PartId::KLEGR].parent_ = &worldTransforms_[PartId::KHIP];
-	worldTransforms_[PartId::KLEGR].Initialize();
+	
 #pragma endregion キャラクター座標
 
 	//子どもアップデート
 	for (size_t i = 1; i < PartId::kNUMPARTID; i++) {
 		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+		worldTransforms_[i].TransferMatrix();
+
 	}
 
 
@@ -158,7 +158,7 @@ void GameScene::Update() {
 		move = { kCharacterSpeed, 0,0 };
 	}
 
-	worldTransforms_[PartId::KROOT].translation_, move;
+	worldTransforms_[PartId::KROOT].translation_ += move;
 
 
 	const float kChestRotSpeed = 0.05f;
@@ -172,7 +172,7 @@ void GameScene::Update() {
 	worldTransforms_[PartId::KHIP].rotation_.y += HipRotY;
 
 	debugText_->SetPos(50, 150);
-	debugText_->Printf("Root:(%f,%f,%f)",
+	debugText_->Printf("Pos:(%f,%f,%f)",
 		worldTransforms_[PartId::KROOT].translation_.x,
 		worldTransforms_[PartId::KROOT].translation_.y,
 		worldTransforms_[PartId::KROOT].translation_.z
@@ -180,12 +180,14 @@ void GameScene::Update() {
 	debugText_->Print("ArrowKey L & R : Rootを移動", 50, 170);
 	debugText_->Print("U Key , I Key : Rotation on Top", 50, 190);
 	debugText_->Print("J Key , K Key : Rotation on Bottom", 50, 210);
-	worldTransforms_[0].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
-	//子どもアップデート
-	for (size_t i = 1; i < PartId::kNUMPARTID; i++) {
-		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
-	}
 
+	
+
+	for (size_t i = 0; i < PartId::kNUMPARTID; i++) {
+		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
+		worldTransforms_[i].TransferMatrix();
+	}
+	
 }
 
 void GameScene::Draw() {
@@ -215,7 +217,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	for (size_t i = 0; i < kNUMPARTID; i++) {
+	for (size_t i = 2; i < kNUMPARTID; i++) {
 		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
 	}
 

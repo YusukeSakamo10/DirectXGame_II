@@ -147,7 +147,7 @@ public:
 		matTrans = matTrans.TranslationMatrix(translation_);
 
 		*this *= matScale;
-		//*this *= matRot;
+		*this *= matRot;
 		*this *= matTrans;
 	}
 	// 代入演算子オーバーロード
