@@ -52,26 +52,7 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 
-	for (WorldTransform& worldTransform_ : worldTransforms_) {
-		//ワールドトランスフォームの初期化
-		worldTransform_.Initialize();
-
-		worldTransform_.scale_ = { 1.0f, 1.0f, 1.0f };
-		worldTransform_.rotation_ = { DEGREE_RADIAN(rot(engine)),DEGREE_RADIAN(rot(engine)), DEGREE_RADIAN(rot(engine)) };
-		worldTransform_.translation_ = { dist(engine), dist(engine), dist(engine) };
-
-		worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-		worldTransform_.TransferMatrix();
-
-	}
-	viewProjection_.fovAngleY = DEGREE_RADIAN(fovAngle);
-
-	//viewProjection_.aspectRatio = 1.0f;
-
-	//ニアクリップ
-	viewProjection_.nearZ = 52.0f;
-	//ファークリップ
-	viewProjection_.farZ = 53.0f;
+	player_->Initialize(model_,textureHandle_);
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -126,21 +107,6 @@ void GameScene::Update() {
 	*/
 #pragma endregion ビュー連続変換
 
-	float AngleSpdY = (input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN)) * 0.2f;
-/*
-	fovAngle += AngleSpdY;
-	viewProjection_.fovAngleY = clamp(DEGREE_RADIAN(viewProjection_.fovAngleY + fovAngle), 0.01f, X_PI);
-	viewProjection_.UpdateMatrix();
-
-	debugText_->SetPos(50, 110);
-	debugText_->Printf("fovAngleY(Degree): %f", RADIAN2DEGREE(viewProjection_.fovAngleY));
-	*/
-	viewProjection_.nearZ += AngleSpdY;
-	viewProjection_.UpdateMatrix();
-	debugText_->SetPos(50, 130);
-	debugText_->Printf("nearZ: %f", viewProjection_.nearZ);
-
-
 }
 
 void GameScene::Draw() {
@@ -170,10 +136,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	for (size_t i = 0; i < 100; i++) {
-		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
-	}
-
+	player_.Draw();
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
 		float length = interval * (maxGrid - 1);

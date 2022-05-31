@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{647f4977-924a-4954-923f-5619e5afc9a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\gameobject">
+      <UniqueIdentifier>{d2e57168-2193-4a37-8e93-2cb78e51c773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\gameobject">
+      <UniqueIdentifier>{35f0887b-cdec-444c-b493-6b21beaa0098}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -65,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="scene\GameScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="gameobject\Player.cpp">
+      <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +158,12 @@
     <ClInclude Include="3d\PrimitiveDrawer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject\Player.h">
+      <Filter>ヘッダー ファイル\gameobject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
@@ -189,5 +204,10 @@
     <None Include="Resources\shaders\Primitive.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DirectXGame.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
