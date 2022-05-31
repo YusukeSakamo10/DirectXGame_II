@@ -47,6 +47,16 @@ private:
 		return RotY;
 	}
 
+
+	Matrix4 Scale(const Vector3& scale){
+		Matrix4 Scale = Matrix4(
+			scale.x, 0, 0, 0,
+			0, scale.y, 0, 0,
+			0, 0, scale.z, 0,
+			0, 0, 0, 1);
+		return Scale;
+	}
+
 public:
 	// 行x列
 	float m[4][4];
@@ -133,6 +143,14 @@ public:
 		*this *= TranslationMatrix(transform);
 	}
 
+	void Identity() {
+		Matrix4 identity = Matrix4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+		 *this = identity;
+	}
 	
 	/// <summary>
 	/// スケール、回転、移動の変化を座標に変換する
@@ -146,8 +164,13 @@ public:
 		matRot = matRot.RotationMatrix(rotation_);
 		matTrans = matTrans.TranslationMatrix(translation_);
 
+		*this = Matrix4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
 		*this *= matScale;
-		//*this *= matRot;
+		*this *= matRot;
 		*this *= matTrans;
 	}
 	// 代入演算子オーバーロード
