@@ -39,7 +39,6 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
-
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("mario.jpg");
 
@@ -52,9 +51,6 @@ void GameScene::Initialize() {
 	worldTransforms_[PartId::KROOT].scale_ = { 1.0f,1.0f, 1.0f };
 	worldTransforms_[PartId::KROOT].rotation_ = { 0,0, 0 };
 	worldTransforms_[PartId::KROOT].translation_ = { 0,0,0 };
-
-	worldTransforms_[0].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
-
 #pragma region キャラクター座標
 	//脊椎
 	worldTransforms_[PartId::KSPINE].translation_ = { 0, 4.5f,0 };
@@ -78,19 +74,24 @@ void GameScene::Initialize() {
 	worldTransforms_[PartId::KHIP].translation_ = { 0, -4.5f,0 };
 	worldTransforms_[PartId::KHIP].parent_ = &worldTransforms_[PartId::KSPINE];
 	
-	worldTransforms_[PartId::KLEGL].translation_ = { -5.0f, -8.0f,0 };
+	worldTransforms_[PartId::KLEGL].translation_ = { -5.0f, -4.5f,0 };
 	worldTransforms_[PartId::KLEGL].parent_ = &worldTransforms_[PartId::KHIP];
 	
-	worldTransforms_[PartId::KLEGR].translation_ = { +5.0f, -8.0f,0 };
+	worldTransforms_[PartId::KLEGR].translation_ = { +5.0f, -4.5f,0 };
 	worldTransforms_[PartId::KLEGR].parent_ = &worldTransforms_[PartId::KHIP];
 	
 #pragma endregion キャラクター座標
 
-	//子どもアップデート
-	for (size_t i = 1; i < PartId::kNUMPARTID; i++) {
-		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
-		worldTransforms_[i].TransferMatrix();
-
+	for (size_t i = 0; i < PartId::kNUMPARTID; i++) {
+		if (worldTransforms_[i].parent_) {
+			worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+			worldTransforms_[i].matWorld_ *= worldTransforms_[i].parent_->matWorld_;
+			worldTransforms_[i].TransferMatrix();
+		}
+		else {
+			worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+			worldTransforms_[i].TransferMatrix();
+		}
 	}
 
 
@@ -112,6 +113,7 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
+
 
 #pragma region ビュー連続変換
 	/*
@@ -171,6 +173,8 @@ void GameScene::Update() {
 	float HipRotY = (input_->PushKey(DIK_K) - input_->PushKey(DIK_J)) * kHipRotSpeed;
 	worldTransforms_[PartId::KHIP].rotation_.y += HipRotY;
 
+
+
 	debugText_->SetPos(50, 150);
 	debugText_->Printf("Pos:(%f,%f,%f)",
 		worldTransforms_[PartId::KROOT].translation_.x,
@@ -182,10 +186,16 @@ void GameScene::Update() {
 	debugText_->Print("J Key , K Key : Rotation on Bottom", 50, 210);
 
 	
-
 	for (size_t i = 0; i < PartId::kNUMPARTID; i++) {
-		worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[0].scale_, worldTransforms_[0].rotation_, worldTransforms_[0].translation_);
-		worldTransforms_[i].TransferMatrix();
+		if (worldTransforms_[i].parent_) {
+			worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+			worldTransforms_[i].matWorld_ *= worldTransforms_[i].parent_->matWorld_;
+			worldTransforms_[i].TransferMatrix();
+		}
+		else {
+			worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
+			worldTransforms_[i].TransferMatrix();
+		}
 	}
 	
 }
@@ -231,6 +241,8 @@ void GameScene::Draw() {
 		float EndPosX = length;
 		float EndPosZ = distance;
 		float posZ = StartPosX * i;
+
+		
 
 		//横
 		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(0, 0, StartPosZ), Vector3(EndPosX, 0, EndPosZ), Vector4(1, 0, 0, 1));
