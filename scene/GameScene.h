@@ -10,6 +10,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
+#include "gameobject/Player.h"
 
 /// <summary>
 /// ゲームシーン
@@ -64,5 +65,7 @@ class GameScene {
 	//座標
 	ViewProjection viewProjection_;
 
+	//プレイヤー
+	Player* player_ = new Player;
 	const int maxGrid = 10;
 };

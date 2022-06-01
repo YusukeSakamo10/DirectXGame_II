@@ -56,7 +56,14 @@ private:
 			0, 0, 0, 1);
 		return Scale;
 	}
-
+	void Identity() {
+		Matrix4 identity = Matrix4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1);
+		*this = identity;
+	}
 public:
 	// 行x列
 	float m[4][4];
@@ -143,14 +150,7 @@ public:
 		*this *= TranslationMatrix(transform);
 	}
 
-	void Identity() {
-		Matrix4 identity = Matrix4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1);
-		 *this = identity;
-	}
+
 	
 	/// <summary>
 	/// スケール、回転、移動の変化を座標に変換する
@@ -175,6 +175,5 @@ public:
 	}
 	// 代入演算子オーバーロード
 	Matrix4& operator*=(const Matrix4& m2);
-	
 };
 

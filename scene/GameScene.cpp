@@ -28,6 +28,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete debugCamera_;
+	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -136,7 +137,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	player_.Draw();
+	player_->Draw(viewProjection_);
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
 		float length = interval * (maxGrid - 1);
