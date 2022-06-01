@@ -5,22 +5,6 @@
 #include "PrimitiveDrawer.h"
 #include <random>
 
-#define X_PI 3.1415f
-#define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
-#define RADIAN2DEGREE(radian) radian * 180 / X_PI
-float MinNum(float num, float min) { return num > min ? min : num; }
-
-float MaxNum(float num, float max) { return num < max ? max : num; }
-
-float clamp(float num, float min, float max) {
-	if (num < min) {
-		return min;
-	}
-	else if (num > max) {
-		return max;
-	}
-	return num;
-}
 
 
 GameScene::GameScene() {}
@@ -108,6 +92,10 @@ void GameScene::Update() {
 	*/
 #pragma endregion ビュー連続変換
 
+	player_->Update();
+	debugText_->SetPos(50, 240);
+	debugText_->Printf("eye : %f, %f, %f",viewProjection_.eye.x, viewProjection_.eye.y,viewProjection_.eye.z);
+
 }
 
 void GameScene::Draw() {
@@ -138,6 +126,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
+	/*
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
 		float length = interval * (maxGrid - 1);
@@ -160,7 +149,7 @@ void GameScene::Draw() {
 		PrimitiveDrawer::GetInstance()->DrawLine3d(Vector3(StartPosX, 0, 0), Vector3(EndPosX, 0, EndPosZ), Vector4(0, 0, 1, 1));
 
 	}
-
+	*/
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

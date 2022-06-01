@@ -8,7 +8,7 @@
 #include "SafeDelete.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
-#include "WorldTransform.h"
+//#include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "gameobject/Player.h"
 
