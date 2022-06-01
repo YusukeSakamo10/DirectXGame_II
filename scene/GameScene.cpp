@@ -46,7 +46,7 @@ void GameScene::Initialize() {
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//軸方向表示の表示を有効にする
-	AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetVisible(false);
 	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
@@ -55,9 +55,32 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	//デバッグカメラの更新
-	debugCamera_->Update();
 
+	//デバック中のみ表示
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_0)) {
+		//デバッグカメラのスイッチ
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+	//デバックテキストの表示
+	player_->SetisDrawDebug(true);
+	isDebugTextActive_ = true;
+	//軸の表示
+	AxisIndicator::GetInstance()->SetVisible(true);
+#endif // _DEBUG
+
+	if (isDebugCameraActive_) {
+		//デバッグカメラの更新
+		debugCamera_->Update();
+		debugProjection_ = debugCamera_->GetViewProjection();
+		viewProjection_.matView = debugProjection_.matView;
+		viewProjection_.matProjection = debugProjection_.matProjection;
+		viewProjection_.TransferMatrix();
+	}
+	else {
+		viewProjection_.UpdateMatrix();
+		viewProjection_.TransferMatrix();
+	}
 #pragma region ビュー連続変換
 	/*
 	Vector3 move = { 0,0,0 };
@@ -92,10 +115,14 @@ void GameScene::Update() {
 	*/
 #pragma endregion ビュー連続変換
 
+	//プレイヤー
 	player_->Update();
-	debugText_->SetPos(50, 240);
-	debugText_->Printf("eye : %f, %f, %f",viewProjection_.eye.x, viewProjection_.eye.y,viewProjection_.eye.z);
 
+	//デバッグテキスト関連
+	if (isDebugTextActive_) {
+	debugText_->SetPos(50, 240);
+	debugText_->Printf("eye : %f, %f, %f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+	}
 }
 
 void GameScene::Draw() {

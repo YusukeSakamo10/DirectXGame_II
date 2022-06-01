@@ -12,11 +12,20 @@
 class Player
 {
 public:
-
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="model">モデル</param>
+	/// <param name="textureHandle">テクスチャハンドル</param>
 	void Initialize(Model* model, const uint32_t textureHandle);
-
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-
+	/// <summary>
+	/// プレイヤー描画
+	/// </summary>
+	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection& viewProjection);
 
 	/// <summary>
@@ -28,10 +37,19 @@ public:
 	/// <param name="moveLeft">左方向キー</param>
 	/// <param name="moveRight">右方向キー</param>
 	void ChangeControlKey(int tempNum = 0, BYTE moveUp = DIK_W, BYTE moveDown = DIK_S, BYTE moveLeft = DIK_A, BYTE moveRight = DIK_D);
+	/// <summary>
+	/// 移動の限界値の設定
+	/// </summary>
+	/// <param name="maxY">上方向の限界値</param>
+	/// <param name="minY">下方向の限界値</param>
+	/// <param name="maxX">右方向の限界値</param>
+	/// <param name="minX">左方向の限界値</param>
 	void SetMoveLimit(int maxY, int minY, int maxX, int minX);
-
-	void SetDrawDebug(bool isDrawDebug = TRUE);
-
+	/// <summary>
+	/// デバックを表示するか
+	/// </summary>
+	/// <param name="isDrawDebug">trueで表示</param>
+	void SetisDrawDebug(bool isDrawDebug) { isDrawDebug_ = isDrawDebug; };
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
@@ -45,12 +63,16 @@ private:
 		BOTTOM = 1,
 		LEFT,
 		RIGHT,
-		END
+		DIRECTIONEND
 	};
-	BYTE MoveKeyBinding_[4] = { DIK_W,DIK_S, DIK_A, DIK_D };
-	int MoveLimit[4] = { 18,-18,-35,35 };
+	//移動キー
+	BYTE MoveKeyBinding_[DIRECTIONEND] = { DIK_W,DIK_S, DIK_A, DIK_D };
+	//移動制限方向
+	float MoveLimit[DIRECTIONEND] = { 18,-18,-35,35 };
+	bool isDrawDebug_ = false;
 
-
+	
+	void DrawDebug();
 	void WorldTransUpdate();	
 	void Move();
 	void Rotate();

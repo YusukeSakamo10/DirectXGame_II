@@ -41,7 +41,7 @@ void Player::Update()
 	Move();
 
 	WorldTransUpdate();
-	SetDrawDebug();
+	DrawDebug();
 }
 
 void Player::Draw(ViewProjection& viewProjection)
@@ -76,9 +76,9 @@ void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
 
 }
 
-void Player::SetDrawDebug(bool isDrawDebug)
+void Player::DrawDebug()
 {
-	if (!isDrawDebug)return;
+	if (!isDrawDebug_)return;
 	debugText_->SetPos(50, 150);
 	debugText_->Printf("Pos:(%f,%f,%f)",
 		worldTransform_.translation_.x,
@@ -101,20 +101,22 @@ void Player::Move()
 {
 	Vector3 move = { 0,0,0 };
 
-	//float speedX = 0.4f;
-	//float speedY = 0.4f;
-	//float spdx = (input_->PushKey(MoveKeyBinding_[RIGHT]) - input_->PushKey(MoveKeyBinding_[LEFT])) * speedX;
-	//float spdy = (input_->PushKey(MoveKeyBinding_[UP])	  - input_->PushKey(MoveKeyBinding_[DOWN])) * speedY;
+	float speedX = 0.4f;
+	float speedY = 0.4f;
+	float spdx = (input_->PushKey(MoveKeyBinding_[RIGHT]) - input_->PushKey(MoveKeyBinding_[LEFT])) * speedX;
+	float spdy = (input_->PushKey(MoveKeyBinding_[UP])	  - input_->PushKey(MoveKeyBinding_[DOWN])) * speedY;
 
-	//float max = MoveLimit[RIGHT];
-	//float min = MoveLimit[LEFT];
+	float max = MoveLimit[RIGHT];
+	float min = MoveLimit[LEFT];
 
-	//worldTransform_.translation_.x = clamp(worldTransform_.translation_.x + spdx, min, max);
-	//max = MoveLimit[TOP];
-	//min = MoveLimit[BOTTOM];
-	//worldTransform_.translation_.y = clamp(worldTransform_.translation_.y + spdy, min, max);
-
-
+	worldTransform_.translation_.x = clamp(worldTransform_.translation_.x + spdx, min, max);
+	max = MoveLimit[TOP];
+	min = MoveLimit[BOTTOM];
+	worldTransform_.translation_.y = clamp(worldTransform_.translation_.y + spdy, min, max);
+//‰¼‚É‰œ‚Éi‚Þ‚Ì‚Éì‚é
+	float spdz = (input_->PushKey(DIK_Z)) * speedY;
+	move = { 0,0,spdz };
+	worldTransform_.translation_ += move;
 
 }
 

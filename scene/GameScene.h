@@ -61,11 +61,17 @@ class GameScene {
 
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
+	//デバッグカメラ有効
+	bool isDebugCameraActive_ = false;
 
 	//座標
 	ViewProjection viewProjection_;
+	ViewProjection debugProjection_;
 
 	//プレイヤー
 	Player* player_ = new Player;
 	const int maxGrid = 10;
+
+	//デバックテキスト
+	bool isDebugTextActive_ = false;
 };
