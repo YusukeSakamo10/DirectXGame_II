@@ -75,6 +75,9 @@
     <ClCompile Include="gameobject\Player.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
+    <ClCompile Include="gameobject\PlayerBullet.cpp">
+      <Filter>ソース ファイル\gameobject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
@@ -162,6 +165,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="gameobject\Player.h">
+      <Filter>ヘッダー ファイル\gameobject</Filter>
+    </ClInclude>
+    <ClInclude Include="gameobject\PlayerBullet.h">
       <Filter>ヘッダー ファイル\gameobject</Filter>
     </ClInclude>
   </ItemGroup>

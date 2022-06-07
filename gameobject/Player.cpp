@@ -42,11 +42,18 @@ void Player::Update()
 
 	WorldTransUpdate();
 	DrawDebug();
+
+	Attack();
+	if (bullet_) bullet_->Update();
+	
 }
 
 void Player::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	
+	if (bullet_) bullet_->Draw(viewProjection);
+	
 }
 
 
@@ -74,6 +81,16 @@ void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
 	MoveLimit[LEFT] = minX;
 	MoveLimit[RIGHT] = maxX;
 
+}
+
+void Player::Attack()
+{
+	if (input_->TriggerKey(DIK_SPACE)) {
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+		
+		bullet_ = newBullet;
+	}
 }
 
 void Player::DrawDebug()

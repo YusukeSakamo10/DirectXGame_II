@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Input.h"
 #include "DebugText.h"
+#include "PlayerBullet.h"
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
@@ -50,12 +51,17 @@ public:
 	/// </summary>
 	/// <param name="isDrawDebug">true‚Å•\Ž¦</param>
 	void SetisDrawDebug(bool isDrawDebug) { isDrawDebug_ = isDrawDebug; };
+	
+	void Attack();
+//	virtual void Attack();
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
+	PlayerBullet* bullet_ = nullptr;
+
 	enum Direction {
 		UP  = 0,
 		TOP = 0,
