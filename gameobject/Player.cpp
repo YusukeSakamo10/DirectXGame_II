@@ -28,16 +28,14 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 	textureHandle_ = textureHandle;
 	ChangeControlKey(1);
 	worldTransform_.Initialize();
-	/*
-	worldTransform_.scale_ = {0.0f,0.0f,0.0f};
-	worldTransform_.rotation_ = {};
-	worldTransform_.translation_ = {};
-	*/
-	//worldTransform_.TransferMatrix();
+
 }
 
 void Player::Update()
 {
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
+		return bullet->GetIsDead();
+		});
 	if (input_->PushKey(DIK_LSHIFT)) {
 		Rotate();
 	}
@@ -91,12 +89,16 @@ void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
 
 void Player::Attack()
 {
-	if (input_->TriggerKey(DIK_SPACE)) {
-		Vector3 v = { 0,0,0 };
-		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
 
-		newBullet->Initialize(model_, worldTransform_.translation_,v);
+	if (input_->TriggerKey(DIK_SPACE)) {
+
+		const float kBulletSpeed = 1.0f;
+		Vector3 v ( 0,0,kBulletSpeed );
 		
+		v = worldTransform_.matWorld_.mulVecMat(v, worldTransform_.matWorld_);
+
+		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		newBullet->Initialize(model_, worldTransform_.translation_,v);
 		bullets_.push_back(std::move(newBullet));
 	
 	}

@@ -1,6 +1,7 @@
 #include "PlayerBullet.h"
 #include <cassert>
 
+
 void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& v)
 {
 	assert(model);
@@ -20,6 +21,11 @@ void PlayerBullet::Update()
 	worldTransform_.translation_ += v_;
 	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+
+	
+	if (worldTransform_.translation_.z > 50 || worldTransform_.translation_.z < -50) {
+		isDead_ = true;
+	}
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection)
