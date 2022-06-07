@@ -36,6 +36,7 @@ void Player::Update()
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
 		return bullet->GetIsDead();
 		});
+
 	if (input_->PushKey(DIK_LSHIFT)) {
 		Rotate();
 	}
@@ -89,8 +90,7 @@ void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
 
 void Player::Attack()
 {
-
-	if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_SPACE) && bullets_.size() < 10) {
 
 		const float kBulletSpeed = 1.0f;
 		Vector3 v ( 0,0,kBulletSpeed );

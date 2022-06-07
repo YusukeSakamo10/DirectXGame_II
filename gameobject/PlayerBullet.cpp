@@ -23,7 +23,10 @@ void PlayerBullet::Update()
 	worldTransform_.TransferMatrix();
 
 	
-	if (worldTransform_.translation_.z > 50 || worldTransform_.translation_.z < -50) {
+	if (worldTransform_.translation_.x > 150 || worldTransform_.translation_.x < -150 ||
+		worldTransform_.translation_.y > 150 || worldTransform_.translation_.y < -150 ||
+		worldTransform_.translation_.z > 150 || worldTransform_.translation_.z < -150
+		) {
 		isDead_ = true;
 	}
 }
