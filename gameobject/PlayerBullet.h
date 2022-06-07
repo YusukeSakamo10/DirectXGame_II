@@ -9,7 +9,7 @@
 class PlayerBullet {
 
 public:
-	void Initialize(Model* model, const Vector3& position);
+	void Initialize(Model* model, const Vector3& position, const Vector3& v);
 
 	void Update();
 
@@ -20,4 +20,5 @@ private:
 	WorldTransform worldTransform_;
 	Model* model_;
 	uint32_t textureHandle_ = 0;
+	Vector3 v_ = { 0,0,0 };
 };

@@ -38,21 +38,27 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 
 void Player::Update()
 {
-	Move();
-
+	if (input_->PushKey(DIK_LSHIFT)) {
+		Rotate();
+	}
+	else {
+		Move();
+	}
 	WorldTransUpdate();
 	DrawDebug();
 
 	Attack();
-	if (bullet_) bullet_->Update();
-	
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
+		bullet->Update();
+	}
 }
 
 void Player::Draw(ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	
-	if (bullet_) bullet_->Draw(viewProjection);
+	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
 	
 }
 
@@ -86,10 +92,13 @@ void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
 void Player::Attack()
 {
 	if (input_->TriggerKey(DIK_SPACE)) {
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_);
+		Vector3 v = { 0,0,0 };
+		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+
+		newBullet->Initialize(model_, worldTransform_.translation_,v);
 		
-		bullet_ = newBullet;
+		bullets_.push_back(std::move(newBullet));
+	
 	}
 }
 
@@ -134,12 +143,13 @@ void Player::Move()
 	float spdz = (input_->PushKey(DIK_Z)) * speedY;
 	move = { 0,0,spdz };
 	worldTransform_.translation_ += move;
-
 }
 
 void Player::Rotate()
 {
-	;
+	float rotSpeed = 0.04f;
+	float rotMoveY = (input_->PushKey(MoveKeyBinding_[RIGHT]) - input_->PushKey(MoveKeyBinding_[LEFT])) * rotSpeed;
+	worldTransform_.rotation_.y += rotMoveY;
 }
 
 void Player::Scale()

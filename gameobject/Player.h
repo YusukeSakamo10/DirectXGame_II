@@ -4,6 +4,8 @@
 #include "Input.h"
 #include "DebugText.h"
 #include "PlayerBullet.h"
+#include <memory>
+#include <list>
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
@@ -60,7 +62,7 @@ private:
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	DebugText* debugText_ = nullptr;
-	PlayerBullet* bullet_ = nullptr;
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 
 	enum Direction {
 		UP  = 0,
@@ -77,7 +79,8 @@ private:
 	float MoveLimit[DIRECTIONEND] = { 18,-18,-35,35 };
 	bool isDrawDebug_ = false;
 
-	
+
+
 	void DrawDebug();
 	void WorldTransUpdate();	
 	void Move();
