@@ -9,11 +9,26 @@
 class PlayerBullet {
 
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="model">モデル</param>
+	/// <param name="position">弾の発射位置</param>
+	/// <param name="v">弾のスピード</param>
 	void Initialize(Model* model, const Vector3& position, const Vector3& v);
-
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="viewProjection">カメラ</param>
 	void Draw(const ViewProjection& viewProjection);
+	/// <summary>
+	/// 弾の有無
+	/// </summary>
+	/// <returns></returns>
 	bool GetIsDead() const { return isDead_; };
 //	void Attack() override;
 private:

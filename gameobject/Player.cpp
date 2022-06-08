@@ -33,20 +33,25 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 
 void Player::Update()
 {
+	//弾の状態で
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
 		return bullet->GetIsDead();
-		});
-
+	});
+	
+	//左シフトを押してる間移動キーで旋回
 	if (input_->PushKey(DIK_LSHIFT)) {
 		Rotate();
 	}
 	else {
 		Move();
 	}
+	//座標の更新
 	WorldTransUpdate();
+	//デバック表示
 	DrawDebug();
-
+	//攻撃
 	Attack();
+	//弾の更新
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
 		bullet->Update();
 	}

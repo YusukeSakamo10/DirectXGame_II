@@ -53,7 +53,9 @@ public:
 	/// </summary>
 	/// <param name="isDrawDebug">true‚Å•\¦</param>
 	void SetisDrawDebug(bool isDrawDebug) { isDrawDebug_ = isDrawDebug; };
-	
+	/// <summary>
+	/// UŒ‚
+	/// </summary>
 	void Attack();
 //	virtual void Attack();
 private:
