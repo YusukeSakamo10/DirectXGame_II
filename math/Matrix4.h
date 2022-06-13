@@ -148,6 +148,7 @@ public:
 	}
 
 	void TransMatrix(const Vector3& transform) {
+		this->Identity();
 		*this *= TranslationMatrix(transform);
 	}
 
@@ -182,6 +183,7 @@ public:
 		sum.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
 		return sum;
 	}
+
 
 	// 代入演算子オーバーロード
 	Matrix4& operator*=(const Matrix4& m2);

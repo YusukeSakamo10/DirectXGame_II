@@ -39,6 +39,7 @@ void GameScene::Initialize() {
 
 	player_->Initialize(model_,textureHandle_);
 
+	enemy_->Initialize(model_, textureHandle_, {10,10, 100});
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -117,6 +118,7 @@ void GameScene::Update() {
 
 	//プレイヤー
 	player_->Update();
+	if (enemy_)enemy_->Update();
 
 	//デバッグテキスト関連
 	if (isDebugTextActive_) {
@@ -153,6 +155,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 	/*
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;

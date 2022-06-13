@@ -47,7 +47,7 @@ public:
 	/// <param name="minY">下方向の限界値</param>
 	/// <param name="maxX">右方向の限界値</param>
 	/// <param name="minX">左方向の限界値</param>
-	void SetMoveLimit(int maxY, int minY, int maxX, int minX);
+	void SetMoveLimit(float maxY, float minY, float maxX, float minX);
 	/// <summary>
 	/// デバックを表示するか
 	/// </summary>

@@ -11,6 +11,7 @@
 //#include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "gameobject/Player.h"
+#include "gameobject/Enemy.h"
 
 /// <summary>
 /// ゲームシーン
@@ -72,6 +73,8 @@ class GameScene {
 	Player* player_ = new Player;
 	const int maxGrid = 10;
 
+	Enemy* enemy_ = new Enemy;
+	
 	//デバックテキスト
 	bool isDebugTextActive_ = false;
 };

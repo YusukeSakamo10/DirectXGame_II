@@ -84,7 +84,7 @@ void Player::ChangeControlKey(int tempNum, BYTE moveUp, BYTE moveDown, BYTE move
 	}
 }
 
-void Player::SetMoveLimit(int maxY, int minY, int maxX, int minX)
+void Player::SetMoveLimit(float maxY, float minY, float maxX, float minX)
 {
 	MoveLimit[TOP] = maxY;
 	MoveLimit[BOTTOM] = minY;
