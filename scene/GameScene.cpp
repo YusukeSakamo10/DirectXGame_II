@@ -12,7 +12,6 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	delete debugCamera_;
-	delete player_;
 }
 
 void GameScene::Initialize() {
@@ -36,10 +35,14 @@ void GameScene::Initialize() {
 
 	//3Dモデルの生成
 	model_ = Model::Create();
-
+	player_ = std::make_unique<Player>();
 	player_->Initialize(model_,textureHandle_);
 
-	enemy_->Initialize(model_, textureHandle_, {10,10, 100});
+	
+	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	enemy->Initialize(model_, textureHandle_, { 10,10, 100 });
+	enemys_.push_back(std::move(enemy));
+	
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -118,7 +121,11 @@ void GameScene::Update() {
 
 	//プレイヤー
 	player_->Update();
-	if (enemy_)enemy_->Update();
+	
+	for (std::unique_ptr<Enemy>& enemy : enemys_) {
+		if (enemy)enemy->Update();
+	}
+
 
 	//デバッグテキスト関連
 	if (isDebugTextActive_) {
@@ -155,7 +162,10 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
-	enemy_->Draw(viewProjection_);
+	
+	for (std::unique_ptr<Enemy>& enemy : enemys_) {
+		enemy->Draw(viewProjection_);
+	}
 	/*
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;

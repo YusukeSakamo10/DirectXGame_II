@@ -4,6 +4,11 @@
 
 class Enemy
 {
+	enum class Phase {
+		APPROACH,
+		LEAVE,
+	};
+
 public:
 	/// <summary>
 	/// 初期化
@@ -35,16 +40,21 @@ private:
 	/// 座標の更新と転送
 	/// </summary>
 	void TransformUpdate();
-
+	void MoveApproach(float limit = 0.0f);
+	void MoveLeave(Vector3 v = {-0.3f,0.1f,0});
 
 private:
 	WorldTransform worldTransform_;
 	Model* model_;
 	uint32_t textureHandle_ = 0u;
-	Vector3 v_ = { 0,0,-0.1 };
+	Vector3 v_ = { 0,0,-0.6 };
 	bool isDead_ = false;
+	Phase phase_ = Phase::APPROACH;
+
 
 public:
 	//ゲッター; セッター
 	void SetVelocity(const Vector3& v) { v_ = v; };
 };
+
+

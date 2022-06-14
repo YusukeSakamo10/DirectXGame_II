@@ -27,8 +27,15 @@ void Enemy::Draw(const ViewProjection& viewProjection)
 
 void Enemy::Move()
 {
-	worldTransform_.translation_ += v_;
-
+	switch (phase_) {
+	case Phase::APPROACH:
+	default:
+		MoveApproach();
+		break;
+	case Phase::LEAVE:
+		MoveLeave();
+		break;
+	}
 }
 
 void Enemy::TransformUpdate()
@@ -38,6 +45,17 @@ void Enemy::TransformUpdate()
 		worldTransform_.rotation_,
 		worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+}
+
+void Enemy::MoveApproach(float limit)
+{
+	worldTransform_.translation_ += v_;
+	if (worldTransform_.translation_.z < limit) phase_ = Phase::LEAVE;
+}
+
+void Enemy::MoveLeave(Vector3 v)
+{
+	worldTransform_.translation_ += v;
 }
 
  

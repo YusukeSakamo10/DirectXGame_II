@@ -70,11 +70,12 @@ class GameScene {
 	ViewProjection debugProjection_;
 
 	//プレイヤー
-	Player* player_ = new Player;
+	std::unique_ptr<Player>player_;
 	const int maxGrid = 10;
 
-	Enemy* enemy_ = new Enemy;
-	
+	std::list<std::unique_ptr<Enemy>> enemys_;
+
+
 	//デバックテキスト
 	bool isDebugTextActive_ = false;
 };
