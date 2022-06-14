@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "TextureManager.h"
+#include "DebugText.h"
 
 class Enemy
 {
@@ -34,6 +35,7 @@ public:
 
 	void Move();
 
+	void DrawDebug(int posX = 50, int posY = 70);
 
 private:
 	/// <summary>
@@ -47,8 +49,12 @@ private:
 	WorldTransform worldTransform_;
 	Model* model_;
 	uint32_t textureHandle_ = 0u;
+	DebugText* debugText_;
+	
 	Vector3 v_ = { 0,0,-0.6 };
 	bool isDead_ = false;
+	bool isDrawDebug_ = true;
+
 	Phase phase_ = Phase::APPROACH;
 
 

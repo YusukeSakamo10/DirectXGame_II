@@ -6,6 +6,7 @@ void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
+	debugText_ = DebugText::GetInstance();
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	worldTransform_.matWorld_.TransMatrix(position);
@@ -36,6 +37,20 @@ void Enemy::Move()
 		MoveLeave();
 		break;
 	}
+}
+
+void Enemy::DrawDebug(int posX, int posY)
+{
+	if (!isDrawDebug_)return;
+	debugText_->SetPos(posX, posY);
+	debugText_->Printf("Pos:(%f,%f,%f)",
+		worldTransform_.translation_.x,
+		worldTransform_.translation_.y,
+		worldTransform_.translation_.z	
+	);
+	debugText_->SetPos(posX, posY + 20);
+	debugText_->Printf("Phase:  %s", Phase::APPROACH);
+
 }
 
 void Enemy::TransformUpdate()
