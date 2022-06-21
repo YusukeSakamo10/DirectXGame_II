@@ -41,6 +41,7 @@ void GameScene::Initialize() {
 	
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->Initialize(model_, textureHandle_, { 10,10, 100 });
+	enemy->SetPlayer(player_.get());
 	enemys_.push_back(std::move(enemy));
 	
 	//ビュープロジェクションの初期化

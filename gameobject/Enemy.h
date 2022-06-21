@@ -6,6 +6,8 @@
 #include <memory>
 #include <list>
 
+class Player;
+
 class Enemy
 {
 	enum class Phase {
@@ -71,9 +73,12 @@ private:
 	Phase phase_ = Phase::APPROACH;
 	int32_t fireTimer_ = 0;
 
+	Player* player_ = nullptr;
 public:
 	//ゲッター; セッター
 	void SetVelocity(const Vector3& v) { v_ = v; };
+	void SetPlayer(Player* player) { player_ = player; };
+	Vector3 GetWorldPosition();
 };
 
 

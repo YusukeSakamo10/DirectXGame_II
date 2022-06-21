@@ -102,6 +102,7 @@
     <ClCompile Include="gameobject\Player.cpp" />
     <ClCompile Include="gameobject\PlayerBullet.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math\Vector3.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -58,6 +58,8 @@ public:
 	/// </summary>
 	void Attack();
 //	virtual void Attack();
+
+	Vector3 GetWorldPosition();
 private:
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;

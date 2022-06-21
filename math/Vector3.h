@@ -24,4 +24,21 @@ class Vector3 {
 	Vector3& operator-=(const Vector3& v);
 	Vector3& operator*=(float s);
 	Vector3& operator/=(float s);
+
+public:
+	float length()const;					//ノルム(長さ)を求める
+	Vector3& normalize();					// 正規化
+	float dot(const Vector3& v)const;
+	Vector3 cross(const Vector3& v) const;		//外積を求める
+
 };
+
+//2項演算子オーバーロード
+
+const Vector3 operator+(const Vector3& v1, const Vector3& v2);
+const Vector3 operator-(const Vector3& v1, const Vector3& v2);
+const Vector3 operator*(const Vector3& v, float s);
+const Vector3 operator*(float s, const Vector3& v);
+const Vector3 operator/(const Vector3& v, float s);
+
+

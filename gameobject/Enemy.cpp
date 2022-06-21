@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "Player.h"
 #include <cassert>
 
 void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3& position)
@@ -16,11 +17,15 @@ void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3
 
 void Enemy::Update()
 {
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) {
+		return bullet->GetIsDead();
+		});
 	PhaseUpdate();
 	TransformUpdate();
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Update();
 	}
+
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)
@@ -65,10 +70,17 @@ void Enemy::DrawDebug(int posX, int posY)
 
 void Enemy::Fire()
 {
-	const float kBulletSpeed = 2.0f;
-	Vector3 v(0, 0, kBulletSpeed);
+	assert(player_);
 
-	v = worldTransform_.matWorld_.mulVecMat(v, worldTransform_.matWorld_);
+	Vector3 playerPos = player_->GetWorldPosition();
+	Vector3 myPos = worldTransform_.translation_;
+
+	Vector3 dist = playerPos - myPos;
+
+	dist = dist.normalize();
+	const float kBulletSpeed = 0.4f;
+	Vector3 v = dist * kBulletSpeed;
+
 
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Initialize(model_, worldTransform_.translation_, v);
@@ -96,12 +108,17 @@ void Enemy::TransformUpdate()
 void Enemy::MoveApproach(float limit)
 {
 	worldTransform_.translation_ += v_;
-	if (worldTransform_.translation_.z < limit) phase_ = Phase::LEAVE;
+	//if (worldTransform_.translation_.z < limit) phase_ = Phase::LEAVE;
 }
 
 void Enemy::MoveLeave(Vector3 v)
 {
 	worldTransform_.translation_ += v;
+}
+
+Vector3 Enemy::GetWorldPosition()
+{
+	return worldTransform_.translation_;
 }
 
  

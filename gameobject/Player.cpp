@@ -109,6 +109,11 @@ void Player::Attack()
 	}
 }
 
+Vector3 Player::GetWorldPosition()
+{
+	return worldTransform_.translation_;
+}
+
 void Player::DrawDebug()
 {
 	if (!isDrawDebug_)return;

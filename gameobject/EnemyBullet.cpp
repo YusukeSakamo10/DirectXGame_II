@@ -18,17 +18,17 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 void EnemyBullet::Update()
 {
-	worldTransform_.translation_ -= v_;
+	worldTransform_.translation_ += v_;
 	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 
 
-	//if (worldTransform_.translation_.x > 150 || worldTransform_.translation_.x < -150 ||
-	//	worldTransform_.translation_.y > 150 || worldTransform_.translation_.y < -150 ||
-	//	worldTransform_.translation_.z > 150 || worldTransform_.translation_.z < -150
-	//	) {
-	//	isDead_ = true;
-	//}
+	if (worldTransform_.translation_.x > 150 || worldTransform_.translation_.x < -150 ||
+		worldTransform_.translation_.y > 150 || worldTransform_.translation_.y < -150 ||
+		worldTransform_.translation_.z > 150 || worldTransform_.translation_.z < -150
+		) {
+		isDead_ = true;
+	}
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection)
