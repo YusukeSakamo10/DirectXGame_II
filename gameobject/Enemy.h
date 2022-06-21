@@ -10,6 +10,7 @@ class Enemy
 		LEAVE,
 	};
 
+
 public:
 	/// <summary>
 	/// ‰Šú‰»
