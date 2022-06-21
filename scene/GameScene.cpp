@@ -31,7 +31,7 @@ void GameScene::Initialize() {
 
 
 	//画像の読み込み
-	textureHandle_ = TextureManager::Load("mario.jpg");
+	textureHandle_ = TextureManager::Load("player.jpg");
 
 	//3Dモデルの生成
 	model_ = Model::Create();

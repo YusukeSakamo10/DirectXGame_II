@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "TextureManager.h"
 #include "DebugText.h"
+#include "EnemyBullet.h"
+#include <memory>
+#include <list>
 
 class Enemy
 {
@@ -34,10 +37,18 @@ public:
 	bool GetIsDead() const { return isDead_; };
 	//	void Attack() override;
 
-	void Move();
+	void PhaseUpdate();
 
 	void DrawDebug(int posX = 50, int posY = 70);
 
+	/// <summary>
+	/// 発砲
+	/// </summary>
+	void Fire();
+
+	void ApproachInit();
+
+	static const int kFireInterval = 60;
 private:
 	/// <summary>
 	/// 座標の更新と転送
@@ -51,13 +62,14 @@ private:
 	Model* model_;
 	uint32_t textureHandle_ = 0u;
 	DebugText* debugText_;
-	
+	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
 	Vector3 v_ = { 0,0,-0.6 };
 	bool isDead_ = false;
 	bool isDrawDebug_ = true;
 
 	Phase phase_ = Phase::APPROACH;
-
+	int32_t fireTimer_ = 0;
 
 public:
 	//ゲッター; セッター
