@@ -5,10 +5,10 @@
 #include "EnemyBullet.h"
 #include <memory>
 #include <list>
-
+#include "Collision.h"
 class Player;
 
-class Enemy
+class Enemy : public Collision
 {
 	enum class Phase {
 		APPROACH,
@@ -50,6 +50,8 @@ public:
 
 	void ApproachInit();
 
+	void OnCollisionEnter() override;
+
 	static const int kFireInterval = 60;
 private:
 	/// <summary>
@@ -58,7 +60,7 @@ private:
 	void TransformUpdate();
 	void MoveApproach(float limit = 0.0f);
 	void MoveLeave(Vector3 v = {-0.3f,0.1f,0});
-
+	
 private:
 	WorldTransform worldTransform_;
 	Model* model_;
@@ -66,7 +68,7 @@ private:
 	DebugText* debugText_;
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
 
-	Vector3 v_ = { 0,0,-0.6 };
+	Vector3 v_ = { 0.0f,0.0f,-0.6f };
 	bool isDead_ = false;
 	bool isDrawDebug_ = true;
 

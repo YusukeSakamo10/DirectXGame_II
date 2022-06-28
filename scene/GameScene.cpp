@@ -122,11 +122,15 @@ void GameScene::Update() {
 
 	//プレイヤー
 	player_->Update();
-	
-	for (std::unique_ptr<Enemy>& enemy : enemys_) {
-		if (enemy)enemy->Update();
-	}
 
+	for (std::unique_ptr<Enemy>& enemy : enemys_) {
+		if (enemy) {
+			enemy->Update();
+			if (enemy->Circle3dCollision(enemy->GetCircleCollider(), player_->GetCircleCollider())) {
+				enemy->OnCollisionEnter();
+			}
+		}
+	}
 
 	//デバッグテキスト関連
 	if (isDebugTextActive_) {

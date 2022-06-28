@@ -14,6 +14,13 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	worldTransform_.translation_ = position;
 	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+	collider = {
+		worldTransform_.translation_.x,
+		worldTransform_.translation_.y,
+		worldTransform_.translation_.z,
+		0.5
+	};
+	isDead_ = false;
 }
 
 void PlayerBullet::Update()
@@ -34,4 +41,9 @@ void PlayerBullet::Update()
 void PlayerBullet::Draw(const ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+void PlayerBullet::OnCollisionEnter()
+{
+	isDead_ = 0;
 }

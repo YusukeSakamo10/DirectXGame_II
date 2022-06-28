@@ -28,6 +28,13 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 	textureHandle_ = textureHandle;
 	ChangeControlKey(1);
 	worldTransform_.Initialize();
+	collider = {
+		worldTransform_.translation_.x,
+		worldTransform_.translation_.y,
+		worldTransform_.translation_.z,
+		0.5
+	};
+	isDead_ = false;
 
 }
 
@@ -109,6 +116,11 @@ void Player::Attack()
 	}
 }
 
+void Player::OnCollisionEnter()
+{
+	isDead_ = true;
+}
+
 Vector3 Player::GetWorldPosition()
 {
 	return worldTransform_.translation_;
@@ -133,6 +145,7 @@ void Player::WorldTransUpdate()
 {
 	worldTransform_.matWorld_.WorldTransUpdate(this->worldTransform_.scale_, this->worldTransform_.rotation_, this->worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+	UpdateTranslation(worldTransform_.translation_);
 }
 
 void Player::Move()

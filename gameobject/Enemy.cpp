@@ -13,6 +13,12 @@ void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3
 	worldTransform_.matWorld_.TransMatrix(position);
 	worldTransform_.TransferMatrix();
 	ApproachInit();
+	collider = {
+	worldTransform_.translation_.x,
+	worldTransform_.translation_.y,
+	worldTransform_.translation_.z,
+	0.5};
+	isDead_ = false;
 }
 
 void Enemy::Update()
@@ -25,7 +31,7 @@ void Enemy::Update()
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Update();
 	}
-
+	UpdateTranslation(worldTransform_.translation_);
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)
@@ -93,6 +99,11 @@ void Enemy::ApproachInit()
 {
 	//発射タイマーを初期化
 	fireTimer_ = kFireInterval;
+}
+
+void Enemy::OnCollisionEnter()
+{
+	isDead_ = true;
 }
 
 

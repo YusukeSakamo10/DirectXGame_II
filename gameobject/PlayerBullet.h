@@ -2,12 +2,12 @@
 #include "Model.h"
 #include "TextureManager.h"
 #include "Matrix4.h"
+#include "Collision.h"
 
 /// <summary>
 /// ©ƒLƒƒƒ‰‚Ì’e
 /// </summary>
-class PlayerBullet {
-
+class PlayerBullet : public Collision{
 public:
 	/// <summary>
 	/// ‰Šú‰»
@@ -30,7 +30,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetIsDead() const { return isDead_; };
-//	void Attack() override;
+	void OnCollisionEnter() override;
 private:
 	WorldTransform worldTransform_;
 	Model* model_;

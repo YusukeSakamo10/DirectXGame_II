@@ -79,3 +79,4 @@ class GameScene {
 	//デバックテキスト
 	bool isDebugTextActive_ = false;
 };
+

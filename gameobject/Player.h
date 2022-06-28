@@ -6,13 +6,14 @@
 #include "PlayerBullet.h"
 #include <memory>
 #include <list>
+#include "Collision.h"
 
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
 #define RADIAN2DEGREE(radian) radian * 180 / X_PI
 
 
-class Player
+class Player : public Collision
 {
 public:
 	/// <summary>
@@ -57,7 +58,8 @@ public:
 	/// UŒ‚
 	/// </summary>
 	void Attack();
-//	virtual void Attack();
+
+	void OnCollisionEnter() override;
 
 	Vector3 GetWorldPosition();
 private:
@@ -82,7 +84,7 @@ private:
 	//ˆÚ“®§ŒÀ•ûŒü
 	float MoveLimit[DIRECTIONEND] = { 18,-18,-35,35 };
 	bool isDrawDebug_ = false;
-
+	bool isDead_ = false;
 
 
 	void DrawDebug();

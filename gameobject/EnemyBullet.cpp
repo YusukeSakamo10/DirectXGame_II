@@ -14,6 +14,8 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 	worldTransform_.translation_ = position;
 	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
+
+	
 }
 
 void EnemyBullet::Update()
