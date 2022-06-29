@@ -18,7 +18,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 		worldTransform_.translation_.x,
 		worldTransform_.translation_.y,
 		worldTransform_.translation_.z,
-		0.5
+		0.8f
 	};
 	isDead_ = false;
 }
@@ -36,6 +36,8 @@ void PlayerBullet::Update()
 		) {
 		isDead_ = true;
 	}
+	UpdateTranslation(worldTransform_.translation_);
+
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection)

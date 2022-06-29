@@ -17,7 +17,7 @@ void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3
 	worldTransform_.translation_.x,
 	worldTransform_.translation_.y,
 	worldTransform_.translation_.z,
-	0.5};
+	0.8f};
 	isDead_ = false;
 }
 
@@ -36,7 +36,8 @@ void Enemy::Update()
 
 void Enemy::Draw(const ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	
+	if (!isDead_)model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
@@ -118,7 +119,7 @@ void Enemy::TransformUpdate()
 
 void Enemy::MoveApproach(float limit)
 {
-	worldTransform_.translation_ += v_;
+	//worldTransform_.translation_ += v_;
 	//if (worldTransform_.translation_.z < limit) phase_ = Phase::LEAVE;
 }
 

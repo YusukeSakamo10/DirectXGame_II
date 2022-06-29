@@ -60,7 +60,8 @@ public:
 	void Attack();
 
 	void OnCollisionEnter() override;
-
+	//’e‚ÌƒŠƒXƒg‚ðŽæ“¾
+	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }
 	Vector3 GetWorldPosition();
 private:
 	WorldTransform worldTransform_;

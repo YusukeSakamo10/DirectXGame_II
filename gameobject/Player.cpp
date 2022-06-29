@@ -32,7 +32,7 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 		worldTransform_.translation_.x,
 		worldTransform_.translation_.y,
 		worldTransform_.translation_.z,
-		0.5
+		0.6f
 	};
 	isDead_ = false;
 
@@ -118,7 +118,7 @@ void Player::Attack()
 
 void Player::OnCollisionEnter()
 {
-	isDead_ = true;
+	//isDead_ = true;
 }
 
 Vector3 Player::GetWorldPosition()

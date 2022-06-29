@@ -14,7 +14,13 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 	worldTransform_.translation_ = position;
 	worldTransform_.matWorld_.TransMatrix(worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
-
+	collider = {
+	worldTransform_.translation_.x,
+	worldTransform_.translation_.y,
+	worldTransform_.translation_.z,
+	0.5
+	};
+	isDead_ = false;
 	
 }
 
@@ -31,9 +37,15 @@ void EnemyBullet::Update()
 		) {
 		isDead_ = true;
 	}
+	UpdateTranslation(worldTransform_.translation_);
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+}
+
+void EnemyBullet::OnCollisionEnter()
+{
+	isDead_ = true;
 }

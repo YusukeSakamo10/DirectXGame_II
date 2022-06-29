@@ -36,14 +36,14 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 	model_ = Model::Create();
 	player_ = std::make_unique<Player>();
-	player_->Initialize(model_,textureHandle_);
+	player_->Initialize(model_, textureHandle_);
 
-	
+
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->Initialize(model_, textureHandle_, { 10,10, 100 });
 	enemy->SetPlayer(player_.get());
 	enemys_.push_back(std::move(enemy));
-	
+
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -120,22 +120,22 @@ void GameScene::Update() {
 	*/
 #pragma endregion ビュー連続変換
 
+	enemys_.remove_if([](std::unique_ptr<Enemy>& enemy) {
+			return enemy->GetIsDead();
+			});
+	
+
 	//プレイヤー
 	player_->Update();
 
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
-		if (enemy) {
-			enemy->Update();
-			if (enemy->Circle3dCollision(enemy->GetCircleCollider(), player_->GetCircleCollider())) {
-				enemy->OnCollisionEnter();
-			}
-		}
+		if (enemy) enemy->Update();
 	}
-
+	AllCheckCollision();
 	//デバッグテキスト関連
 	if (isDebugTextActive_) {
-	debugText_->SetPos(50, 240);
-	debugText_->Printf("eye : %f, %f, %f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+		debugText_->SetPos(50, 240);
+		debugText_->Printf("eye : %f, %f, %f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
 	}
 }
 
@@ -167,7 +167,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
-	
+
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		enemy->Draw(viewProjection_);
 	}
@@ -214,5 +214,57 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::AllCheckCollision()
+{
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_->GetBullets();
+
+	//複数体の敵の一人から
+	for (std::unique_ptr<Enemy>& enemy : enemys_) {
+		//一体の弾のリストを取得して
+		const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = enemy->GetBullets();
+
+		
+#pragma region 自キャラと敵キャラの当たり判定
+		if (enemy->Circle3dCollision(enemy->GetCircleCollider(), player_->GetCircleCollider())) {
+			enemy->OnCollisionEnter();
+		}
+
+#pragma endregion
+
+		//各敵の弾との判定
+		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets) {
+
+#pragma region 自キャラと敵弾の当たり判定
+
+			if (player_->Circle3dCollision(enemyBullet->GetCircleCollider(), player_->GetCircleCollider())) {
+				player_->OnCollisionEnter();
+				enemyBullet->OnCollisionEnter();
+			}
+
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+			for (const std::unique_ptr<PlayerBullet>& playerBullet : playerBullets) {
+				if (playerBullet->Circle3dCollision(enemyBullet->GetCircleCollider(), playerBullet->GetCircleCollider())) {
+					enemyBullet->OnCollisionEnter();
+					playerBullet->OnCollisionEnter();
+				}
+			}
+#pragma endregion
+		}
+#pragma region 自弾と敵の判定
+		for (const std::unique_ptr<PlayerBullet>& playerBullet : playerBullets) {
+			if (playerBullet->Circle3dCollision(enemy->GetCircleCollider(), playerBullet->GetCircleCollider())) {
+				enemy->OnCollisionEnter();
+				playerBullet->OnCollisionEnter();
+			}
+		}
+#pragma endregion
+
+	}
+	//複数の敵の範囲forの終わり
+
 }
 

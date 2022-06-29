@@ -32,11 +32,6 @@ public:
 	/// </summary>
 	/// <param name="viewProjection">ƒJƒƒ‰</param>
 	void Draw(const ViewProjection& viewProjection);
-	/// <summary>
-	/// ’e‚Ì—L–³
-	/// </summary>
-	/// <returns></returns>
-	bool GetIsDead() const { return isDead_; };
 	//	void Attack() override;
 
 	void PhaseUpdate();
@@ -70,6 +65,7 @@ private:
 
 	Vector3 v_ = { 0.0f,0.0f,-0.6f };
 	bool isDead_ = false;
+	bool isDelete = false;
 	bool isDrawDebug_ = true;
 
 	Phase phase_ = Phase::APPROACH;
@@ -81,6 +77,13 @@ public:
 	void SetVelocity(const Vector3& v) { v_ = v; };
 	void SetPlayer(Player* player) { player_ = player; };
 	Vector3 GetWorldPosition();
+	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+	/// <summary>
+	/// ’e‚Ì—L–³
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsDead() const { return isDead_; };
+
 };
 
 

@@ -24,6 +24,16 @@ public:
 		}
 		return false;
 	}
+	bool Circle3dCollision(const CircleCollider& colliderB) {
+		float x = (collider.x - colliderB.x) * (collider.x - colliderB.x);
+		float y = (collider.y - colliderB.y) * (collider.y - colliderB.y);
+		float z = (collider.z - colliderB.z) * (collider.z - colliderB.z);
+		float r = (collider.r + colliderB.r) * (collider.r + colliderB.r);
+		if (r >= (x + y + z)) {
+			return true;
+		}
+		return false;
+	}
 	CircleCollider GetCircleCollider() { return collider; }
 
 };

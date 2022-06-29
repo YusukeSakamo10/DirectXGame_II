@@ -2,8 +2,8 @@
 #include "Model.h"
 #include "TextureManager.h"
 #include "Matrix4.h"
-
-class EnemyBullet
+#include "Collision.h"
+class EnemyBullet : public Collision
 {
 public:
 	/// <summary>
@@ -27,7 +27,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool GetIsDead() const { return isDead_; };
-	//	void Attack() override;
+	void OnCollisionEnter() override;
 private:
 	WorldTransform worldTransform_;
 	Model* model_;
