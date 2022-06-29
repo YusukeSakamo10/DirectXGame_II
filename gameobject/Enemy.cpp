@@ -25,9 +25,12 @@ void Enemy::Update()
 {
 	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) {
 		return bullet->GetIsDead();
-		});
+	});
+
+	//ó‘Ô‚²‚Æ‚ÌˆÚ“®‚âUŒ‚‚ÌXV
 	PhaseUpdate();
-	TransformUpdate();
+
+	//Še’e‚ÌXV
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Update();
 	}
@@ -36,8 +39,9 @@ void Enemy::Update()
 
 void Enemy::Draw(const ViewProjection& viewProjection)
 {
-	
+	//“G‚ª¶‚«‚Ä‚¢‚éŠÔ•`‰æ
 	if (!isDead_)model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
@@ -58,7 +62,13 @@ void Enemy::PhaseUpdate()
 	case Phase::LEAVE:
 		MoveLeave();
 		break;
+	case Phase::DEAD:
+		if (bullets_.size() == 0)isDelete_ = true;
+		return;
+		break;
 	}
+
+	TransformUpdate();
 }
 
 void Enemy::DrawDebug(int posX, int posY)
@@ -93,7 +103,6 @@ void Enemy::Fire()
 	newBullet->Initialize(model_, worldTransform_.translation_, v);
 	bullets_.push_back(std::move(newBullet));
 
-
 }
 
 void Enemy::ApproachInit()
@@ -104,6 +113,7 @@ void Enemy::ApproachInit()
 
 void Enemy::OnCollisionEnter()
 {
+	phase_ = Phase::DEAD;
 	isDead_ = true;
 }
 

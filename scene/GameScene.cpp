@@ -121,8 +121,8 @@ void GameScene::Update() {
 #pragma endregion ビュー連続変換
 
 	enemys_.remove_if([](std::unique_ptr<Enemy>& enemy) {
-			return enemy->GetIsDead();
-			});
+		return enemy->GetIsDelete();
+	});
 	
 
 	//プレイヤー
@@ -171,6 +171,7 @@ void GameScene::Draw() {
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		enemy->Draw(viewProjection_);
 	}
+
 	/*
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
@@ -195,6 +196,8 @@ void GameScene::Draw() {
 
 	}
 	*/
+	
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -237,15 +240,14 @@ void GameScene::AllCheckCollision()
 		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets) {
 
 #pragma region 自キャラと敵弾の当たり判定
-
 			if (player_->Circle3dCollision(enemyBullet->GetCircleCollider(), player_->GetCircleCollider())) {
 				player_->OnCollisionEnter();
 				enemyBullet->OnCollisionEnter();
 			}
-
 #pragma endregion
 
 #pragma region 自弾と敵弾の当たり判定
+			//自弾の数分ループ
 			for (const std::unique_ptr<PlayerBullet>& playerBullet : playerBullets) {
 				if (playerBullet->Circle3dCollision(enemyBullet->GetCircleCollider(), playerBullet->GetCircleCollider())) {
 					enemyBullet->OnCollisionEnter();
@@ -254,7 +256,10 @@ void GameScene::AllCheckCollision()
 			}
 #pragma endregion
 		}
+		//各敵の弾との判定終わり
+		
 #pragma region 自弾と敵の判定
+		//自弾の数のループ
 		for (const std::unique_ptr<PlayerBullet>& playerBullet : playerBullets) {
 			if (playerBullet->Circle3dCollision(enemy->GetCircleCollider(), playerBullet->GetCircleCollider())) {
 				enemy->OnCollisionEnter();

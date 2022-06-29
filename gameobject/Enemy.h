@@ -13,6 +13,7 @@ class Enemy : public Collision
 	enum class Phase {
 		APPROACH,
 		LEAVE,
+		DEAD
 	};
 
 
@@ -65,7 +66,7 @@ private:
 
 	Vector3 v_ = { 0.0f,0.0f,-0.6f };
 	bool isDead_ = false;
-	bool isDelete = false;
+	bool isDelete_ = false;
 	bool isDrawDebug_ = true;
 
 	Phase phase_ = Phase::APPROACH;
@@ -82,7 +83,7 @@ public:
 	/// ’e‚Ì—L–³
 	/// </summary>
 	/// <returns></returns>
-	bool GetIsDead() const { return isDead_; };
+	bool GetIsDelete() const { return isDelete_; };
 
 };
 
