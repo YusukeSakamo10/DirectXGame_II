@@ -12,6 +12,7 @@
 #include "DebugCamera.h"
 #include "gameobject/Player.h"
 #include "gameobject/Enemy.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -61,6 +62,7 @@ class GameScene {
 
 	// 3Dモデル
 	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
 
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
@@ -77,6 +79,8 @@ class GameScene {
 
 	std::list<std::unique_ptr<Enemy>> enemys_;
 
+	//あ
+	std::unique_ptr<Skydome>skydome_;
 
 	//デバックテキスト
 	bool isDebugTextActive_ = false;
