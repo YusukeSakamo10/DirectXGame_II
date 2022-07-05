@@ -4,7 +4,7 @@ void Skydome::Initialize( Model* model)
 {
 
 	worldTransform_.Initialize();
-	worldTransform_.scale_ = { 50,50,50 };
+	worldTransform_.scale_ = { 100,100,100 };
 	model_ = model;
 }
 
