@@ -74,10 +74,13 @@ void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
 	if (input_->TriggerKey(DIK_SPACE)) {		
-		viewProjection_.matView;
+		cameraNum_++;
+		if (cameraNum_ >= 3) {
+			cameraNum_ = 0;
+		}
 	}
-
-
+	viewProjection_.target = worldTransforms_[cameraNum_].translation_;
+	viewProjection_.UpdateMatrix();
 }
 
 void GameScene::Draw() {

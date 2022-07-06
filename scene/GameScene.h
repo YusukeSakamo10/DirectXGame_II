@@ -64,4 +64,6 @@ class GameScene {
 	//座標
 	WorldTransform worldTransforms_[3];
 	ViewProjection viewProjection_;
+
+	int cameraNum_ = 0;
 };
