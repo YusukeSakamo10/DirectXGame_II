@@ -64,8 +64,6 @@ void GameScene::Initialize() {
 
 	//変換行列を求める
 	worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
-
-	
 	worldTransforms_[i].TransferMatrix();
 	}
 }
@@ -80,6 +78,10 @@ void GameScene::Update() {
 			cameraNum_ = 0;
 		}
 	moveTarget = worldTransforms_[cameraNum_].translation_ - viewProjection_.target;
+	moveTarget = moveTarget.normalize();
+	}
+	if (viewProjection_.target.x != worldTransforms_[cameraNum_].translation_.x) {
+		viewProjection_.target += moveTarget;
 	}
 	viewProjection_.UpdateMatrix();
 }
