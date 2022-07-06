@@ -29,8 +29,9 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 
 	//ワールドトランスフォームの初期化
-	worldTransform_.Initialize();
-
+	for (size_t i = 0; i < 3; i++) {
+		worldTransforms_[i].Initialize();
+	}
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
@@ -46,22 +47,36 @@ void GameScene::Initialize() {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
 	//座標の設定
-	worldTransform_.scale_ = { 5.0f, 5.0f, 5.0f };
-	float radian = DEGREE_RADIAN(45);
-	worldTransform_.rotation_ = {  radian,radian, 0.0f };
-	worldTransform_.translation_ = { 10.0f,10.0f,10.0f };
+	for (size_t i = 0; i < 3; i++) {
+	
+	worldTransforms_[i].scale_ = {1.0f, 1.0f, 1.0f};
+	switch (i) {
+	case 0:
+		worldTransforms_[i].translation_ = { 0.0f,-5.0f,10.0f };
+		break;
+	case 1:
+		worldTransforms_[i].translation_ = { -10.0f,5.0f,10.0f };
+		break;
+	case 2:
+		worldTransforms_[i].translation_ = { 10.0f,5.0f,10.0f };
+		break;
+	};
 
 	//変換行列を求める
-	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_,worldTransform_.translation_);
+	worldTransforms_[i].matWorld_.WorldTransUpdate(worldTransforms_[i].scale_, worldTransforms_[i].rotation_, worldTransforms_[i].translation_);
 
 	
-	worldTransform_.TransferMatrix();
-
+	worldTransforms_[i].TransferMatrix();
+	}
 }
 
 void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
+	if (input_->TriggerKey(DIK_SPACE)) {		
+		viewProjection_.matView;
+	}
+
 
 }
 
@@ -92,9 +107,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-
-	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
-	
+	for (size_t i = 0; i < 3; i++) {
+		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
+	}
 	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

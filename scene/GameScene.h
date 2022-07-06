@@ -62,6 +62,6 @@ class GameScene {
 	DebugCamera* debugCamera_ = nullptr;
 
 	//座標
-	WorldTransform worldTransform_;
+	WorldTransform worldTransforms_[3];
 	ViewProjection viewProjection_;
 };
