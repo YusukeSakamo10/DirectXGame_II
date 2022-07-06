@@ -75,11 +75,12 @@ void GameScene::Update() {
 	debugCamera_->Update();
 	if (input_->TriggerKey(DIK_SPACE)) {		
 		cameraNum_++;
+		
 		if (cameraNum_ >= 3) {
 			cameraNum_ = 0;
 		}
+	moveTarget = worldTransforms_[cameraNum_].translation_ - viewProjection_.target;
 	}
-	viewProjection_.target = worldTransforms_[cameraNum_].translation_;
 	viewProjection_.UpdateMatrix();
 }
 

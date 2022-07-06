@@ -25,3 +25,10 @@ class Vector3 {
 	Vector3& operator*=(float s);
 	Vector3& operator/=(float s);
 };
+Vector3 operator-(const Vector3& a, const Vector3& b) {
+	Vector3 ans;
+	ans.x = a.x - b.x;
+	ans.y = a.x - b.x;
+	ans.z = a.x - b.x;
+	return ans;
+};

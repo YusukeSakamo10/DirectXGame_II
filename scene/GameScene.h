@@ -66,4 +66,5 @@ class GameScene {
 	ViewProjection viewProjection_;
 
 	int cameraNum_ = 0;
+	Vector3 moveTarget = {0,0,0};
 };
