@@ -7,31 +7,6 @@
 #define X_PI 3.1415f
 #define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
 
-GameScene::GameScene() {}
-
-GameScene::~GameScene() {
-	delete model_;
-	delete debugCamera_;
-}
-
-void GameScene::Initialize() {
-
-	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
-	debugText_ = DebugText::GetInstance();
-
-
-	//画像の読み込み
-	textureHandle_ = TextureManager::Load("mario.jpg"); #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
-#include "AxisIndicator.h"
-#include "PrimitiveDrawer.h"
-
-#define X_PI 3.1415f
-#define DEGREE_RADIAN(deg) (X_PI * (deg) / 180.0f)
-
 		GameScene::GameScene() {}
 
 	GameScene::~GameScene() {
