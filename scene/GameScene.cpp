@@ -77,12 +77,18 @@ void GameScene::Update() {
 		if (cameraNum_ >= 3) {
 			cameraNum_ = 0;
 		}
+
 		moveTarget = worldTransforms_[cameraNum_].translation_ - viewProjection_.target;
 		moveTarget = moveTarget.normalize();
 	}
-	if (viewProjection_.target.x != worldTransforms_[cameraNum_].translation_.x) {
-		viewProjection_.target += moveTarget;
-	}
+	if (viewProjection_.target.x == worldTransforms_[cameraNum_].translation_.x &&
+		viewProjection_.target.y == worldTransforms_[cameraNum_].translation_.y &&
+		viewProjection_.target.z == worldTransforms_[cameraNum_].translation_.z) {
+	}else viewProjection_.target += moveTarget;
+	
+
+	
+
 	viewProjection_.UpdateMatrix();
 }
 
