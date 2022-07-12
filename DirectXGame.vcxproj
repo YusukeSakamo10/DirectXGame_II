@@ -97,6 +97,7 @@
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\TextureManager.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="Camera\RailCamera.cpp" />
     <ClCompile Include="gameobject\Enemy.cpp" />
     <ClCompile Include="gameobject\EnemyBullet.cpp" />
     <ClCompile Include="gameobject\Player.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="base\SafeDelete.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="Camera\RailCamera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="gameobject\Enemy.h" />
     <ClInclude Include="gameobject\EnemyBullet.h" />

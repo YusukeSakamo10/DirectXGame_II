@@ -13,6 +13,8 @@
 #include "gameobject/Player.h"
 #include "gameobject/Enemy.h"
 #include "Skydome.h"
+#include "Camera/RailCamera.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -57,17 +59,12 @@ class GameScene {
 	/// ゲームシーン用
 	/// </summary>
 	
-		//テクスチャハンドル
+	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
 	// 3Dモデル
 	Model* model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
-
-	//デバックカメラ
-	DebugCamera* debugCamera_ = nullptr;
-	//デバッグカメラ有効
-	bool isDebugCameraActive_ = false;
 
 	//座標
 	ViewProjection viewProjection_;
@@ -79,8 +76,17 @@ class GameScene {
 
 	std::list<std::unique_ptr<Enemy>> enemys_;
 
-	//あ
+	//天球
 	std::unique_ptr<Skydome>skydome_;
+
+	//レールカメラ
+	RailCamera *railCamera_ = nullptr;
+	WorldTransform worldTransform_;
+
+	//デバックカメラ
+	DebugCamera* debugCamera_ = nullptr;
+	//デバッグカメラ有効
+	bool isDebugCameraActive_ = false;
 
 	//デバックテキスト
 	bool isDebugTextActive_ = false;

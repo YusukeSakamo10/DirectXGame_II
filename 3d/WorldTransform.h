@@ -45,4 +45,8 @@ struct WorldTransform {
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
+
+	void UpdateMatrix() {
+		matWorld_.WorldTransUpdate(scale_, rotation_, translation_);
+	};
 };

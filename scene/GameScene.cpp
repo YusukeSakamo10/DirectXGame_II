@@ -6,13 +6,13 @@
 #include <random>
 
 
-
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
 	delete modelSkydome_;
 	delete debugCamera_;
+	delete railCamera_;
 }
 
 void GameScene::Initialize() {
@@ -29,7 +29,8 @@ void GameScene::Initialize() {
 	//乱数範囲の指定
 	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
 	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
-
+	worldTransform_.Initialize();
+	worldTransform_.translation_ = { 0, -50.0f, 0 };
 
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("player.jpg");
@@ -55,6 +56,9 @@ void GameScene::Initialize() {
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(modelSkydome_);
 
+	//レールカメラ
+	railCamera_ = new RailCamera;
+	railCamera_->Initialize(worldTransform_.translation_, worldTransform_.rotation_);
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//軸方向表示の表示を有効にする
@@ -76,6 +80,7 @@ void GameScene::Update() {
 	}
 	//デバックテキストの表示
 	player_->SetisDrawDebug(true);
+	railCamera_->SetisDrawDebug(true);
 	isDebugTextActive_ = true;
 	//軸の表示
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -93,6 +98,9 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 		viewProjection_.TransferMatrix();
 	}
+
+	railCamera_->Update();
+	railCamera_->RePlaceViewProjection(viewProjection_);
 #pragma region ビュー連続変換
 	/*
 	Vector3 move = { 0,0,0 };
@@ -139,6 +147,7 @@ void GameScene::Update() {
 		if (enemy) enemy->Update();
 	}
 	AllCheckCollision();
+
 	//デバッグテキスト関連
 	if (isDebugTextActive_) {
 		debugText_->SetPos(50, 240);
@@ -216,6 +225,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	//
+	railCamera_->DrawDebug();
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);

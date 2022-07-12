@@ -176,23 +176,7 @@ public:
 		*this *= matTrans;
 	
 	}
-	void WorldTransUpdate() {
-		Vector3 scale_ = { 1,1,1 }; Vector3 rotation_ = {1,1,1}; Vector3 translation_ = { 1,1,1 };
-		Matrix4 matScale, matRot, matTrans;
-		matScale = matScale.ScaleMatrix(scale_);
-		matRot = matRot.RotationMatrix(rotation_);
-		matTrans = matTrans.TranslationMatrix(translation_);
 
-		*this = Matrix4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1);
-		*this *= matScale;
-		*this *= matRot;
-		*this *= matTrans;
-
-	}
 	Vector3 mulVecMat(Vector3 v, Matrix4 m)const  {
 		Vector3 sum;
 		sum.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
