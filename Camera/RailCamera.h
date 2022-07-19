@@ -15,6 +15,9 @@ public:
 	/// <param name="isDrawDebug">true‚Å•\Ž¦</param>
 	void SetisDrawDebug(bool isDrawDebug) { isDrawDebug_ = isDrawDebug; };
 	void RePlaceViewProjection(ViewProjection &viewProjection);
+
+	const ViewProjection& GetViewProjection() { return viewProjection_; }
+	WorldTransform& GetWorldMatrix() { return worldTransform_; }
 private:
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;

@@ -59,6 +59,8 @@ public:
 	/// </summary>
 	void Attack();
 
+	void SetParent(WorldTransform& worldTransform) { worldTransform_.parent_ = &worldTransform; }
+
 	void OnCollisionEnter() override;
 	//’e‚ÌƒŠƒXƒg‚ðŽæ“¾
 	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; }

@@ -80,7 +80,7 @@ class GameScene {
 	std::unique_ptr<Skydome>skydome_;
 
 	//レールカメラ
-	RailCamera *railCamera_ = nullptr;
+	std::unique_ptr<RailCamera> railCamera_;
 	WorldTransform worldTransform_;
 
 	//デバックカメラ

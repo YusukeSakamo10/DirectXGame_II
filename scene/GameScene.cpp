@@ -5,18 +5,16 @@
 #include "PrimitiveDrawer.h"
 #include <random>
 
-
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
 	delete modelSkydome_;
 	delete debugCamera_;
-	delete railCamera_;
 }
 
 void GameScene::Initialize() {
-
+	
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -30,7 +28,7 @@ void GameScene::Initialize() {
 	std::uniform_real_distribution<float> dist(-10.0f, 10.0f);
 	std::uniform_real_distribution<float> rot(0, DEGREE_RADIAN(360));
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { 0, -50.0f, 0 };
+	worldTransform_.translation_ = { 0, -10.0f, 0 };
 
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("player.jpg");
@@ -55,10 +53,13 @@ void GameScene::Initialize() {
 	//天球
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(modelSkydome_);
-
 	//レールカメラ
-	railCamera_ = new RailCamera;
-	railCamera_->Initialize(worldTransform_.translation_, worldTransform_.rotation_);
+	railCamera_ = std::make_unique<RailCamera>();
+	
+	railCamera_->Initialize(Vector3(0,0,-50.0f), Vector3(0, 0, 0));
+
+	player_->SetParent(railCamera_->GetWorldMatrix());
+
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 	//軸方向表示の表示を有効にする
@@ -95,12 +96,16 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 	}
 	else {
-		viewProjection_.UpdateMatrix();
-		viewProjection_.TransferMatrix();
+		//viewProjection_.UpdateMatrix();
+		//viewProjection_.TransferMatrix();
 	}
 
 	railCamera_->Update();
-	railCamera_->RePlaceViewProjection(viewProjection_);
+	viewProjection_.matView = railCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+	viewProjection_.TransferMatrix();
+
+
 #pragma region ビュー連続変換
 	/*
 	Vector3 move = { 0,0,0 };
@@ -149,10 +154,10 @@ void GameScene::Update() {
 	AllCheckCollision();
 
 	//デバッグテキスト関連
-	if (isDebugTextActive_) {
-		debugText_->SetPos(50, 240);
-		debugText_->Printf("eye : %f, %f, %f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
-	}
+	//if (isDebugTextActive_) {
+	//	debugText_->SetPos(50, 240);
+	//	debugText_->Printf("eye : %f, %f, %f", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+	//}
 }
 
 void GameScene::Draw() {

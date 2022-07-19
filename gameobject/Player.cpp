@@ -27,6 +27,8 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 	model_ = model;
 	textureHandle_ = textureHandle;
 	ChangeControlKey(1);
+
+	worldTransform_.translation_.z = 10;
 	worldTransform_.Initialize();
 	collider = {
 		worldTransform_.translation_.x,
@@ -144,7 +146,13 @@ void Player::DrawDebug()
 void Player::WorldTransUpdate()
 {
 	worldTransform_.matWorld_.WorldTransUpdate(this->worldTransform_.scale_, this->worldTransform_.rotation_, this->worldTransform_.translation_);
+
+	if (worldTransform_.parent_) {
+		worldTransform_.matWorld_ *= worldTransform_.parent_->matWorld_;
+	}
 	worldTransform_.TransferMatrix();
+
+	//“–‚½‚è”»’è
 	UpdateTranslation(worldTransform_.translation_);
 }
 
