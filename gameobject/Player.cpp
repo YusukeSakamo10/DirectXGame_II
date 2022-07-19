@@ -45,8 +45,8 @@ void Player::Update()
 	//弾の状態で
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet) {
 		return bullet->GetIsDead();
-	});
-	
+		});
+
 	//左シフトを押してる間移動キーで旋回
 	if (input_->PushKey(DIK_LSHIFT)) {
 		Rotate();
@@ -72,7 +72,7 @@ void Player::Draw(ViewProjection& viewProjection)
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
-	
+
 }
 
 
@@ -107,14 +107,20 @@ void Player::Attack()
 	if (input_->TriggerKey(DIK_SPACE) && bullets_.size() < 10) {
 
 		const float kBulletSpeed = 1.0f;
-		Vector3 v ( 0,0,kBulletSpeed );
-		
+		Vector3 v(0, 0, kBulletSpeed);
+
 		v = worldTransform_.matWorld_.mulVecMat(v, worldTransform_.matWorld_);
+		Vector3 pos =
+		{
+			worldTransform_.matWorld_.m[3][0],
+			worldTransform_.matWorld_.m[3][1],
+			worldTransform_.matWorld_.m[3][2],
+		};
 
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initialize(model_, worldTransform_.translation_,v);
+		newBullet->Initialize(model_, pos, v);
 		bullets_.push_back(std::move(newBullet));
-	
+
 	}
 }
 
@@ -163,7 +169,7 @@ void Player::Move()
 	float speedX = 0.4f;
 	float speedY = 0.4f;
 	float spdx = (input_->PushKey(MoveKeyBinding_[RIGHT]) - input_->PushKey(MoveKeyBinding_[LEFT])) * speedX;
-	float spdy = (input_->PushKey(MoveKeyBinding_[UP])	  - input_->PushKey(MoveKeyBinding_[DOWN])) * speedY;
+	float spdy = (input_->PushKey(MoveKeyBinding_[UP]) - input_->PushKey(MoveKeyBinding_[DOWN])) * speedY;
 
 	float max = MoveLimit[RIGHT];
 	float min = MoveLimit[LEFT];
@@ -172,7 +178,7 @@ void Player::Move()
 	max = MoveLimit[TOP];
 	min = MoveLimit[BOTTOM];
 	worldTransform_.translation_.y = clamp(worldTransform_.translation_.y + spdy, min, max);
-//仮に奥に進むのに作る
+	//仮に奥に進むのに作る
 	float spdz = (input_->PushKey(DIK_Z)) * speedY;
 	move = { 0,0,spdz };
 	worldTransform_.translation_ += move;
