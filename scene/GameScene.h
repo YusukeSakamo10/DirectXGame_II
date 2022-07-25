@@ -49,6 +49,9 @@ class GameScene {
 
 	void AllCheckCollision();
 
+	void AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBullet);
+
+
   private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -70,11 +73,13 @@ class GameScene {
 	ViewProjection viewProjection_;
 	ViewProjection debugProjection_;
 
+
 	//プレイヤー
 	std::unique_ptr<Player>player_;
 	const int maxGrid = 10;
 
 	std::list<std::unique_ptr<Enemy>> enemys_;
+	std::list<std::unique_ptr<EnemyBullet>> enemyBullets_;
 
 	//天球
 	std::unique_ptr<Skydome>skydome_;

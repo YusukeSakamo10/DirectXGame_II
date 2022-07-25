@@ -62,7 +62,6 @@ private:
 	Model* model_;
 	uint32_t textureHandle_ = 0u;
 	DebugText* debugText_;
-	std::list<std::unique_ptr<EnemyBullet>> bullets_;
 
 	Vector3 v_ = { 0.0f,0.0f,-0.6f };
 	bool isDead_ = false;

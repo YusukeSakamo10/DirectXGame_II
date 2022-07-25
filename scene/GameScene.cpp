@@ -295,3 +295,8 @@ void GameScene::AllCheckCollision()
 
 }
 
+void GameScene::AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBullet)
+{
+	enemyBullets_.push_back(std::move(enemyBullet));
+}
+
