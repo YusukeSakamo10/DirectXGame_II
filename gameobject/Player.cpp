@@ -131,7 +131,7 @@ void Player::OnCollisionEnter()
 
 Vector3 Player::GetWorldPosition()
 {
-	return worldTransform_.translation_;
+	return worldTransform_.matWorld_.WorldPosition();
 }
 
 void Player::DrawDebug()

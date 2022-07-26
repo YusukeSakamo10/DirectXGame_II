@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "GameScene.h"
 #include <cassert>
 
 void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3& position)
@@ -23,17 +24,11 @@ void Enemy::Initialize(Model* model, const uint32_t textureHandle, const Vector3
 
 void Enemy::Update()
 {
-	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) {
-		return bullet->GetIsDead();
-	});
 
 	//èÛë‘Ç≤Ç∆ÇÃà⁄ìÆÇ‚çUåÇÇÃçXêV
 	PhaseUpdate();
 
-	//äeíeÇÃçXêV
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
-		bullet->Update();
-	}
+
 	UpdateTranslation(worldTransform_.translation_);
 }
 
@@ -42,9 +37,7 @@ void Enemy::Draw(const ViewProjection& viewProjection)
 	//ìGÇ™ê∂Ç´ÇƒÇ¢ÇÈä‘ï`âÊ
 	if (!isDead_)model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_) {
-		bullet->Draw(viewProjection);
-	}
+
 }
 
 void Enemy::PhaseUpdate()
@@ -63,7 +56,6 @@ void Enemy::PhaseUpdate()
 		MoveLeave();
 		break;
 	case Phase::DEAD:
-		if (bullets_.size() == 0)isDelete_ = true;
 		return;
 		break;
 	}
@@ -101,8 +93,7 @@ void Enemy::Fire()
 
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 	newBullet->Initialize(model_, worldTransform_.translation_, v);
-	bullets_.push_back(std::move(newBullet));
-
+	gameScene_->AddEnemyBullet(move(newBullet));
 }
 
 void Enemy::ApproachInit()

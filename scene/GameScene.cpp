@@ -4,7 +4,7 @@
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
 #include <random>
-
+#include <fstream>
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -30,6 +30,8 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { 0, -10.0f, 0 };
 
+	LoadEnemyPopData();
+
 	//画像の読み込み
 	textureHandle_ = TextureManager::Load("player.jpg");
 
@@ -45,6 +47,7 @@ void GameScene::Initialize() {
 	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
 	enemy->Initialize(model_, textureHandle_, { 10,10, 100 });
 	enemy->SetPlayer(player_.get());
+	enemy->SetGameScene(this);
 	enemys_.push_back(std::move(enemy));
 
 	//ビュープロジェクションの初期化
@@ -105,6 +108,7 @@ void GameScene::Update() {
 	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
 
+	UpdateEnemyPopCommands();
 
 #pragma region ビュー連続変換
 	/*
@@ -144,6 +148,10 @@ void GameScene::Update() {
 		return enemy->GetIsDelete();
 	});
 	
+	enemyBullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet) {
+		return bullet->GetIsDead();
+	});
+
 
 	//プレイヤー
 	player_->Update();
@@ -151,6 +159,11 @@ void GameScene::Update() {
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		if (enemy) enemy->Update();
 	}
+	//各弾の更新
+	for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_) {
+		enemyBullet->Update();
+	}
+
 	AllCheckCollision();
 
 	//デバッグテキスト関連
@@ -188,11 +201,13 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
-	skydome_->Draw(viewProjection_);
+	//skydome_->Draw(viewProjection_);
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		enemy->Draw(viewProjection_);
 	}
-
+	for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_) {
+		enemyBullet->Draw(viewProjection_);
+	}
 	/*
 	for (size_t i = 0; i < maxGrid; i++) {
 		float interval = maxGrid;
@@ -248,7 +263,7 @@ void GameScene::AllCheckCollision()
 	//複数体の敵の一人から
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		//一体の弾のリストを取得して
-		const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = enemy->GetBullets();
+
 
 		
 #pragma region 自キャラと敵キャラの当たり判定
@@ -259,7 +274,7 @@ void GameScene::AllCheckCollision()
 #pragma endregion
 
 		//各敵の弾との判定
-		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets) {
+		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets_) {
 
 #pragma region 自キャラと敵弾の当たり判定
 			if (player_->Circle3dCollision(enemyBullet->GetCircleCollider(), player_->GetCircleCollider())) {
@@ -298,5 +313,75 @@ void GameScene::AllCheckCollision()
 void GameScene::AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBullet)
 {
 	enemyBullets_.push_back(std::move(enemyBullet));
+}
+
+void GameScene::LoadEnemyPopData()
+{
+	std::ifstream file;
+	file.open("Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	enemyPopCommands << file.rdbuf();
+	
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands()
+{
+
+	if (waitFlag) {
+		waitTimer--;
+		if (waitTimer <= 0) {
+			waitFlag = false;
+		}
+		return;
+	}
+
+	std::string line;
+
+	while (getline(enemyPopCommands, line)) {
+
+		std::istringstream line_stream(line);
+
+		std::string word;
+
+		getline(line_stream, word, ',');
+		
+		if (word.find("//") == 0) {
+			continue;
+		}
+
+
+		if (word.find("POP") == 0) {
+
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+			std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+			enemy->Initialize(model_, textureHandle_, { x, y, z });
+			enemy->SetPlayer(player_.get());
+			enemy->SetGameScene(this);
+			enemys_.push_back(std::move(enemy));
+		}
+		else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			int32_t waitTime = atoi(word.c_str());
+
+			waitFlag = true;
+			waitTimer = waitTime;
+
+			break;
+		}
+
+		
+	}
+
+
 }
 

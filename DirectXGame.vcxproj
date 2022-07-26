@@ -103,6 +103,7 @@
     <ClCompile Include="gameobject\Player.cpp" />
     <ClCompile Include="gameobject\PlayerBullet.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manager\BulletManager.cpp" />
     <ClCompile Include="math\Vector3.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="gameobject\Player.h" />
     <ClInclude Include="gameobject\PlayerBullet.h" />
     <ClInclude Include="input\Input.h" />
+    <ClInclude Include="Manager\BulletManager.h" />
     <ClInclude Include="math\MathUtility.h" />
     <ClInclude Include="math\Matrix4.h" />
     <ClInclude Include="math\Vector2.h" />

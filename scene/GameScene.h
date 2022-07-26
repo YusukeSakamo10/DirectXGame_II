@@ -14,7 +14,7 @@
 #include "gameobject/Enemy.h"
 #include "Skydome.h"
 #include "Camera/RailCamera.h"
-
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -95,5 +95,13 @@ class GameScene {
 
 	//デバックテキスト
 	bool isDebugTextActive_ = false;
+
+	std::stringstream enemyPopCommands;
+	
+	bool waitFlag;
+	int32_t waitTimer;
+
+	void LoadEnemyPopData();
+	void UpdateEnemyPopCommands();
 };
 

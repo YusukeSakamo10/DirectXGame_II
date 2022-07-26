@@ -152,7 +152,9 @@ public:
 		*this *= TranslationMatrix(transform);
 	}
 
-
+	Vector3 WorldPosition(){
+		return Vector3{ m[3][0],m[3][1],m[3][2] };
+	}
 	
 	/// <summary>
 	/// スケール、回転、移動の変化を座標に変換する

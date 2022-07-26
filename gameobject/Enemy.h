@@ -7,6 +7,7 @@
 #include <list>
 #include "Collision.h"
 class Player;
+class GameScene;
 
 class Enemy : public Collision
 {
@@ -72,12 +73,18 @@ private:
 	int32_t fireTimer_ = 0;
 
 	Player* player_ = nullptr;
+	GameScene* gameScene_ = nullptr;
+
 public:
 	//ゲッター; セッター
 	void SetVelocity(const Vector3& v) { v_ = v; };
 	void SetPlayer(Player* player) { player_ = player; };
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; };
+
 	Vector3 GetWorldPosition();
-	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+//いらない
+	//const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; }
+	
 	/// <summary>
 	/// 弾の有無
 	/// </summary>
