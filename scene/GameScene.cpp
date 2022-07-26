@@ -201,7 +201,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->Draw(viewProjection_);
-	//skydome_->Draw(viewProjection_);
+	skydome_->Draw(viewProjection_);
 	for (std::unique_ptr<Enemy>& enemy : enemys_) {
 		enemy->Draw(viewProjection_);
 	}
@@ -274,7 +274,9 @@ void GameScene::AllCheckCollision()
 #pragma endregion
 
 		//各敵の弾との判定
-		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets_) {
+		const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = enemyBullets_;
+
+		for (const std::unique_ptr<EnemyBullet>&enemyBullet : enemyBullets) {
 
 #pragma region 自キャラと敵弾の当たり判定
 			if (player_->Circle3dCollision(enemyBullet->GetCircleCollider(), player_->GetCircleCollider())) {

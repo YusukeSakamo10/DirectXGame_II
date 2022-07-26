@@ -30,14 +30,13 @@ void EnemyBullet::Update()
 	worldTransform_.matWorld_.WorldTransUpdate(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	worldTransform_.TransferMatrix();
 
-
 	if (worldTransform_.translation_.x > 150 || worldTransform_.translation_.x < -150 ||
 		worldTransform_.translation_.y > 150 || worldTransform_.translation_.y < -150 ||
 		worldTransform_.translation_.z > 150 || worldTransform_.translation_.z < -150
 		) {
 		isDead_ = true;
 	}
-	UpdateTranslation(worldTransform_.translation_);
+	UpdateTranslation(worldTransform_.matWorld_.WorldPosition());
 }
 
 void EnemyBullet::Draw(const ViewProjection& viewProjection)

@@ -34,7 +34,7 @@ void Player::Initialize(Model* model, const uint32_t textureHandle)
 		worldTransform_.translation_.x,
 		worldTransform_.translation_.y,
 		worldTransform_.translation_.z,
-		0.6f
+		radius
 	};
 	isDead_ = false;
 
@@ -64,6 +64,13 @@ void Player::Update()
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_) {
 		bullet->Update();
 	}
+
+	collider = { 
+		worldTransform_.matWorld_.m[3][0],
+		worldTransform_.matWorld_.m[3][1],
+		worldTransform_.matWorld_.m[3][2],
+		radius
+	};
 }
 
 void Player::Draw(ViewProjection& viewProjection)
@@ -159,7 +166,7 @@ void Player::WorldTransUpdate()
 	worldTransform_.TransferMatrix();
 
 	//“–‚½‚è”»’è
-	UpdateTranslation(worldTransform_.translation_);
+	UpdateTranslation(worldTransform_.matWorld_.WorldPosition());
 }
 
 void Player::Move()

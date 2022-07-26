@@ -29,7 +29,7 @@ void Enemy::Update()
 	PhaseUpdate();
 
 
-	UpdateTranslation(worldTransform_.translation_);
+	UpdateTranslation(worldTransform_.matWorld_.WorldPosition());
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)

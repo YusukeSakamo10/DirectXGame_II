@@ -36,7 +36,7 @@ void PlayerBullet::Update()
 		) {
 		isDead_ = true;
 	}
-	UpdateTranslation(worldTransform_.translation_);
+	UpdateTranslation(worldTransform_.matWorld_.WorldPosition());
 
 }
 

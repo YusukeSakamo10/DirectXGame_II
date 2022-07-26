@@ -88,7 +88,7 @@ private:
 	float MoveLimit[DIRECTIONEND] = { 18,-18,-35,35 };
 	bool isDrawDebug_ = false;
 	bool isDead_ = false;
-
+	float radius = 0.6f;
 
 	void DrawDebug();
 	void WorldTransUpdate();	
