@@ -71,24 +71,35 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	//デバッグカメラの更新
 	debugCamera_->Update();
-	if (input_->TriggerKey(DIK_SPACE)) {
-		cameraNum_++;
+	if (input_->TriggerKey(DIK_SPACE) && !isMove_) {
+ 		cameraNum_++;
 
 		if (cameraNum_ >= 3) {
 			cameraNum_ = 0;
 		}
 
 		moveTarget = worldTransforms_[cameraNum_].translation_ - viewProjection_.target;
-		moveTarget = moveTarget.normalize();
+	//	moveTarget = moveTarget.normalize();
+		isMove_ = true;
 	}
-	if (viewProjection_.target.x == worldTransforms_[cameraNum_].translation_.x &&
-		viewProjection_.target.y == worldTransforms_[cameraNum_].translation_.y &&
-		viewProjection_.target.z == worldTransforms_[cameraNum_].translation_.z) {
-	}else viewProjection_.target += moveTarget;
 	
+	if (isMove_) {
+		if (viewProjection_.target.x == worldTransforms_[cameraNum_].translation_.x &&
+			viewProjection_.target.y == worldTransforms_[cameraNum_].translation_.y &&
+			viewProjection_.target.z == worldTransforms_[cameraNum_].translation_.z) {
+			isMove_ = false;
+			timer = 0;
+		}
+		else {
+			if (timer <= maxTime) timer++;
+			float t = timer / (float)maxTime;
+			moveTarget *= t;
+			viewProjection_.target += moveTarget;
+		}
+	}
 
-	
-
+	debugText_->SetPos(50, 100);
+	debugText_->Printf("target : (%f, %f, %f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
 	viewProjection_.UpdateMatrix();
 }
 

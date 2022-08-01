@@ -65,4 +65,7 @@ private: // メンバ変数
 
 	int cameraNum_ = 0;
 	Vector3 moveTarget = { 0,0,0 };
+	bool isMove_ = false;
+	int timer = 0;
+	int maxTime = 20;
 };
